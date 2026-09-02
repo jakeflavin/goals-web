@@ -3,10 +3,10 @@ import styled, { css } from 'styled-components'
 /**
  * The page's shared furniture: the column, the headings, the rules, the panel.
  *
- * There are no cards with borders here and no shadows anywhere, for the same
- * reason there are none in the app (DESIGN.md §14): depth comes from a lifted
- * surface, and a shadow reads as a different design system. A panel is
- * `surface` on `canvas` and nothing else.
+ * No shadows and no gradients, for the same reason there are none in the app
+ * (DESIGN.md §14): depth comes from a lifted surface, and a shadow reads as a
+ * different design system. The one exception is the phone bezel, which is
+ * hardware rather than a panel.
  */
 
 export const Column = styled.div`
@@ -19,12 +19,18 @@ export const Column = styled.div`
 export const Section = styled.section`
   padding: ${({ theme }) => theme.space.s24} 0;
 
-  @media (max-width: 720px) {
+  @media (max-width: 900px) {
     padding: ${({ theme }) => theme.space.s16} 0;
   }
 `
 
-/** The hairline between one section and the next. */
+/** A section that sits on the lifted ground rather than the canvas. Used to
+ *  break the page into movements without drawing a rule across every one. */
+export const Band = styled.div`
+  background: ${({ theme }) => theme.color.canvasAlt};
+  border-block: 1px solid ${({ theme }) => theme.color.border};
+`
+
 export const Rule = styled.hr`
   height: 1px;
   border: 0;
@@ -34,17 +40,17 @@ export const Rule = styled.hr`
 
 export const H1 = styled.h1`
   margin: 0;
-  font-size: clamp(2.75rem, 7vw, 4.25rem);
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.75rem, 6.4vw, 4.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
   font-weight: 700;
 `
 
 export const H2 = styled.h2`
   margin: 0 0 ${({ theme }) => theme.space.s5};
-  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.875rem, 3.6vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
   font-weight: 700;
 `
 
@@ -57,15 +63,15 @@ export const H3 = styled.h3`
 
 /**
  * The uppercase caption above a section, the same device the app uses over a
- * card. Tracked out, secondary ink, and never larger than the body.
+ * card. Tracked out, in the accent, and never larger than the body.
  */
 export const Eyebrow = styled.p`
   margin: 0 0 ${({ theme }) => theme.space.s4};
   font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.color.textSecondary};
+  color: ${({ theme }) => theme.color.accent};
 `
 
 export const Prose = styled.p<{ $lead?: boolean }>`
@@ -76,7 +82,7 @@ export const Prose = styled.p<{ $lead?: boolean }>`
   ${({ $lead }) =>
     $lead &&
     css`
-      font-size: 1.25rem;
+      font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
       line-height: 1.5;
     `}
 
@@ -102,20 +108,56 @@ export const Panel = styled.div`
 `
 
 /**
- * A screenshot of the running app.
+ * Text on one side, a picture on the other, alternating down the page.
  *
- * The app is black to its edges, so a screenshot dropped on this page would
- * bleed into it and the goal blocks would look like they were floating in the
- * layout. The hairline is what says where the phone stops. No bezel is drawn:
- * a fake device frame is a graphic about an app, which is the thing the
- * portfolio's own rules say a picture of an app must not be.
+ * The picture column is the narrower one. A phone is roughly twice as tall as
+ * it is wide, so giving it half the width of a laptop makes the screenshot the
+ * section and the words a caption, which is the wrong way round for a page
+ * whose job is to explain something.
  */
-export const Shot = styled.img`
-  width: 100%;
-  /* The width and height attributes are on the element so the layout does not
-     jump while the image loads. Without this line those same attributes pin the
-     rendered height at the pixel height of the file. */
-  height: auto;
-  border-radius: ${({ theme }) => theme.radius.lg};
-  border: 1px solid ${({ theme }) => theme.color.border};
+export const Split = styled.div<{ $pictureFirst?: boolean }>`
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: ${({ theme }) => theme.space.s16};
+  align-items: center;
+
+  > figure {
+    margin: 0;
+    order: ${({ $pictureFirst }) => ($pictureFirst ? -1 : 0)};
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.space.s10};
+
+    > figure {
+      order: 0;
+    }
+  }
+`
+
+/** A list of named things under a heading, separated by hairlines. */
+export const Items = styled.dl`
+  margin: 0;
+  display: grid;
+  gap: ${({ theme }) => theme.space.s6};
+
+  div {
+    padding-top: ${({ theme }) => theme.space.s5};
+    border-top: 1px solid ${({ theme }) => theme.color.border};
+  }
+
+  dd {
+    margin: 0;
+    color: ${({ theme }) => theme.color.textSecondary};
+    font-size: 0.9375rem;
+  }
+`
+
+export const Grid = styled(Items)`
+  grid-template-columns: 1fr 1fr;
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
 `

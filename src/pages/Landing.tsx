@@ -1,185 +1,141 @@
-import styled from 'styled-components'
-import { Header, Footer } from '../components/Chrome'
+import styled, { useTheme } from 'styled-components'
+import { Cta } from '../components/Cta'
+import { PhoneFrame } from '../components/PhoneFrame'
+import { WatchFrame } from '../components/WatchFrame'
+import { SlotBars } from '../components/SlotBars'
 import {
+  Band,
   Column,
   Eyebrow,
+  Grid,
   H1,
   H2,
   H3,
+  Items,
   Panel,
   Prose,
   Rule,
   Section,
-  Shot,
+  Split,
 } from '../components/primitives'
-import {
-  APP_STORE_URL,
-  IS_ON_THE_APP_STORE,
-  PLANS,
-  SLOT_COLOURS,
-} from '../lib/site'
+import { PLANS, SMALL_FEATURES } from '../lib/site'
 
 /**
  * The landing page.
  *
- * The pitch is the App Store description's, in the same voice, because they are
- * the same product being described to the same person and two different pitches
+ * It is built to be read top to bottom by somebody who has never heard of the
+ * app and has to end up understanding it well enough to decide. So the order is
+ * an argument rather than a feature list: what it is, why the limit is the
+ * point, how a goal is made, the three things a goal is made of, where it shows
+ * up when the phone is in a pocket, what it costs, and who wrote it.
+ *
+ * The pitch is the approved App Store description in the same voice, because
+ * they describe the same product to the same person and two different pitches
  * would mean one of them is wrong.
  *
- * The pictures are screenshots of the app running with `-seed`, not mockups and
- * not renders. That is the portfolio's rule for cover images and it holds here
- * for the same reason: a graphic about an app says nothing about using one.
+ * Every picture is a screenshot of the app running with its `-seed` launch
+ * argument, captured twice so the phone on the page is in the same scheme as
+ * the page around it. No mockups, no renders, no invented data.
  */
+
+// ---------------------------------------------------------------- hero
 
 const Hero = styled(Section)`
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: 1.08fr 0.92fr;
   gap: ${({ theme }) => theme.space.s16};
   align-items: center;
-  /* Less air above than a section in the middle of the page: the header is
-     already 68px of it, and the headline belongs near the top of the fold. */
   padding-top: ${({ theme }) => theme.space.s16};
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.space.s10};
+    gap: ${({ theme }) => theme.space.s12};
+    text-align: left;
   }
 `
 
-/** The one decorative element on the page: five bars, in the five slot colours. */
-const Slots = styled.div`
+const HeroBars = styled(SlotBars)`
+  margin: ${({ theme }) => theme.space.s6} 0;
+`
+
+const Actions = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.space.s2};
-  margin: ${({ theme }) => theme.space.s6} 0 ${({ theme }) => theme.space.s6};
-
-  span {
-    height: 6px;
-    flex: 1;
-    max-width: 64px;
-    border-radius: 3px;
-  }
-`
-
-/**
- * One element, two states, and they are deliberately not the same weight.
- *
- * Live, this is the only thing on the page anybody came to press, so it takes
- * the accent fill and the ink that pairs with it. Before the app is approved
- * there is nothing to press, so it drops to an outline in secondary ink and
- * stops looking like a promise it cannot keep.
- */
-const Availability = styled.a<{ $live: boolean }>`
-  display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: ${({ theme }) => theme.space.s3};
-  margin: ${({ theme }) => theme.space.s6} 0 0;
-  padding: ${({ theme }) => theme.space.s3} ${({ theme }) => theme.space.s5};
-  border-radius: ${({ theme }) => theme.radius.sm};
-  background: ${({ theme, $live }) => ($live ? theme.color.accent : 'transparent')};
-  border: 1px solid ${({ theme, $live }) => ($live ? 'transparent' : theme.color.border)};
-  color: ${({ theme, $live }) => ($live ? theme.color.ink : theme.color.textSecondary)};
-  font-size: 0.9375rem;
-  font-weight: 600;
-  text-decoration: none;
+  gap: ${({ theme }) => theme.space.s5};
+  margin-top: ${({ theme }) => theme.space.s8};
 `
 
-const Requirement = styled.p`
+const Fineprint = styled.p`
   margin: ${({ theme }) => theme.space.s4} 0 0;
   font-size: 0.875rem;
   color: ${({ theme }) => theme.color.textSecondary};
 `
 
-/** Text on one side, a screenshot on the other, alternating down the page. */
-const Split = styled.div<{ $shotFirst?: boolean }>`
+// ---------------------------------------------------------------- the argument
+
+/**
+ * The pull quote that carries the product opinion.
+ *
+ * It is the largest type on the page after the headline and it is the only
+ * place the page raises its voice, because the scarcity is the whole reason
+ * this app exists rather than one of its features.
+ */
+const Statement = styled.p`
+  margin: 0;
+  max-width: 22ch;
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+
+  span {
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+`
+
+const StatementLayout = styled(Section)`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${({ theme }) => theme.space.s16};
   align-items: center;
 
-  > figure {
-    margin: 0;
-    order: ${({ $shotFirst }) => ($shotFirst ? -1 : 0)};
-  }
-
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.space.s10};
-
-    > figure {
-      order: 0;
-    }
+    gap: ${({ theme }) => theme.space.s8};
   }
 `
 
-/**
- * A screenshot is a phone, so it should not grow to the width of a laptop.
- *
- * These are full length shots rather than crops, and a phone is close to twice
- * as tall as it is wide, so the width is what keeps the picture from being the
- * whole section. 300px is a phone at roughly three quarters life size.
- */
-const ShotFrame = styled.figure`
-  max-width: 300px;
-  margin-inline: auto;
-`
+// ---------------------------------------------------------------- steps
 
-/**
- * The hero's shot, narrower again.
- *
- * The home screen has to be shown whole: five blocks filling the screen exactly,
- * with visibly no room for a sixth, is the entire product opinion, and a crop of
- * it would be a picture of four goals and an argument nobody can see. So it is
- * the width that gives, not the height.
- */
-const HeroShot = styled(ShotFrame)`
-  max-width: 268px;
-`
-
-const Items = styled.dl`
+const Steps = styled.ol`
+  list-style: none;
+  counter-reset: step;
   margin: 0;
-  display: grid;
-  gap: ${({ theme }) => theme.space.s6};
-
-  div {
-    padding-top: ${({ theme }) => theme.space.s6};
-    border-top: 1px solid ${({ theme }) => theme.color.border};
-  }
-
-  dd {
-    margin: 0;
-    color: ${({ theme }) => theme.color.textSecondary};
-  }
-`
-
-const Grid = styled(Items)`
-  grid-template-columns: 1fr 1fr;
-
-  @media (max-width: 720px) {
-    grid-template-columns: 1fr;
-  }
-`
-
-const Plans = styled.div`
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: ${({ theme }) => theme.space.s4};
-  margin-bottom: ${({ theme }) => theme.space.s8};
+  gap: ${({ theme }) => theme.space.s6};
 
-  @media (max-width: 720px) {
+  @media (max-width: 800px) {
     grid-template-columns: 1fr;
   }
-`
 
-const Plan = styled(Panel)`
-  padding: ${({ theme }) => theme.space.s6};
+  li {
+    counter-increment: step;
+    padding-top: ${({ theme }) => theme.space.s5};
+    border-top: 2px solid ${({ theme }) => theme.color.accent};
+  }
 
-  h3 {
-    margin: 0 0 ${({ theme }) => theme.space.s3};
+  li::before {
+    content: counter(step, decimal-leading-zero);
+    display: block;
+    margin-bottom: ${({ theme }) => theme.space.s3};
     font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: ${({ theme }) => theme.color.textSecondary};
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: ${({ theme }) => theme.color.accent};
+    font-variant-numeric: tabular-nums;
   }
 
   p {
@@ -189,274 +145,598 @@ const Plan = styled(Panel)`
   }
 `
 
-const Price = styled.span`
-  display: block;
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: ${({ theme }) => theme.color.text};
-  font-variant-numeric: tabular-nums;
-`
+// ---------------------------------------------------------------- habits
 
-const Signature = styled(Panel)`
-  max-width: 62ch;
+/** Two phones, because the habit list and one habit's history are two halves of
+ *  the same answer and neither says it alone. */
+const Pair = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${({ theme }) => theme.space.s8};
+  align-items: start;
+  margin-top: ${({ theme }) => theme.space.s12};
 
-  p:last-child {
-    margin-bottom: 0;
+  figure {
+    margin: 0;
+  }
+
+  /* The second phone sits lower, so the pair reads as an arrangement rather
+     than as two things that failed to line up. */
+  figure:last-child {
+    margin-top: ${({ theme }) => theme.space.s12};
+  }
+
+  /* Without a cap these fill half the column each, which draws a phone wider
+     than the one in your hand. */
+  > figure > div {
+    max-width: 340px;
+  }
+
+  /* Two phones side by side on a phone is two phones nobody can read: at 390px
+     they land at about 170px each. Stacked and capped, they stay legible. */
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.space.s8};
+
+    figure:last-child {
+      margin-top: 0;
+    }
+
+    > figure > div {
+      max-width: 280px;
+    }
   }
 `
 
-function AppStoreNote() {
-  if (IS_ON_THE_APP_STORE) {
-    return (
-      <Availability href={APP_STORE_URL} $live>
-        Download on the App Store
-      </Availability>
-    )
+// ---------------------------------------------------------------- surfaces
+
+const Surfaces = styled.div`
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: ${({ theme }) => theme.space.s6};
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
   }
-  // Not a link, and not a disabled one either: there is nothing to go to yet, so
-  // it states the fact and stays out of the tab order.
+`
+
+const SurfaceCard = styled(Panel)`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.space.s8};
+
+  /* The two cards are different heights and the grid stretches them level. The
+     picture takes the slack evenly above and below rather than all of it above,
+     which is what left the watch stranded at the foot of its card. */
+  > *:last-child {
+    margin-block: auto;
+  }
+
+  h3 {
+    margin: 0 0 ${({ theme }) => theme.space.s2};
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    margin: 0;
+    color: ${({ theme }) => theme.color.textSecondary};
+    font-size: 0.9375rem;
+  }
+`
+
+/** The widget shot is a crop of a real home screen, not a device, so it gets a
+ *  frame of its own rather than a bezel. */
+const HomeScreen = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: ${({ theme }) => theme.radius.md};
+  border: 1px solid ${({ theme }) => theme.color.border};
+`
+
+/** iOS dims the wallpaper and turns the widgets dark with the system, so this
+ *  follows the scheme for the same reason every phone on the page does. */
+function WidgetShot() {
+  const { mode } = useTheme()
   return (
-    <Availability as="p" $live={false}>
-      Coming to the App Store
-    </Availability>
+    <HomeScreen
+      src={`/goals/images/widgets-${mode}.jpg`}
+      width={860}
+      height={891}
+      alt="An iPhone home screen with two Goals widgets on it: a task list and one goal's progress."
+      loading="lazy"
+    />
   )
 }
+
+// ---------------------------------------------------------------- price
+
+const Tiers = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: ${({ theme }) => theme.space.s4};
+  align-items: stretch;
+
+  @media (max-width: 980px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const Tier = styled.div<{ $featured: boolean }>`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: ${({ theme }) => theme.space.s6};
+  border-radius: ${({ theme }) => theme.radius.md};
+  background: ${({ theme, $featured }) =>
+    $featured ? theme.color.surface : 'transparent'};
+  border: 1px solid
+    ${({ theme, $featured }) => ($featured ? theme.color.accent : theme.color.border)};
+
+  h3 {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+
+  ul {
+    list-style: none;
+    margin: ${({ theme }) => theme.space.s5} 0 0;
+    padding: 0;
+    display: grid;
+    gap: ${({ theme }) => theme.space.s2};
+    font-size: 0.9375rem;
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+
+  li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: ${({ theme }) => theme.space.s2};
+    align-items: start;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    margin-top: 5px;
+    color: ${({ theme }) => theme.color.accent};
+  }
+`
+
+const Price = styled.p`
+  margin: ${({ theme }) => theme.space.s4} 0 0;
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+
+  span {
+    display: block;
+    margin-top: ${({ theme }) => theme.space.s2};
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+`
+
+const TierNote = styled.p`
+  margin: ${({ theme }) => theme.space.s4} 0 0;
+  font-size: 0.9375rem;
+  color: ${({ theme }) => theme.color.textSecondary};
+`
+
+const Badge = styled.span`
+  position: absolute;
+  top: 0;
+  right: ${({ theme }) => theme.space.s5};
+  transform: translateY(-50%);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.color.accent};
+  color: ${({ theme }) => theme.color.ink};
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+`
+
+function Tick() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4 12.5 5.5 5.5L20 6.5" />
+    </svg>
+  )
+}
+
+// ---------------------------------------------------------------- signature
+
+const Signature = styled(Panel)`
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: ${({ theme }) => theme.space.s6};
+  align-items: start;
+  max-width: 720px;
+
+  img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+// ---------------------------------------------------------------- closing
+
+const Closing = styled(Section)`
+  text-align: center;
+
+  h2 {
+    max-width: 18ch;
+    margin-inline: auto;
+  }
+
+  p {
+    margin-inline: auto;
+  }
+`
+
+// ---------------------------------------------------------------- the page
 
 export function Landing() {
   return (
     <>
-      <Header />
-      <main>
+      <Column>
+        <Hero>
+          <div>
+            <H1>Five goals. One year.</H1>
+            <HeroBars />
+            <Prose $lead>
+              Goals is a goal tracker for iPhone and Apple Watch with five slots for the year.
+              The limit is the point. Most goal apps let you pile up wishes until the list stops
+              meaning anything. Goals makes you pick.
+            </Prose>
+            <Actions>
+              <Cta />
+            </Actions>
+            <Fineprint>
+              iPhone and Apple Watch, iOS 26 or later. One goal free, with no time limit.
+            </Fineprint>
+          </div>
+          <figure style={{ margin: 0 }}>
+            <PhoneFrame
+              shot="home"
+              width="290px"
+              priority
+              alt="The Goals home screen: five full width colour blocks, one for each goal, each showing its title and how far along it is."
+            />
+          </figure>
+        </Hero>
+      </Column>
+
+      <Band>
         <Column>
-          <Hero>
+          <StatementLayout>
+            <Statement>
+              You get five. <span>Not six.</span>
+            </Statement>
             <div>
-              <H1>Five goals. One year.</H1>
-              <Slots aria-hidden="true">
-                {SLOT_COLOURS.map((colour) => (
-                  <span key={colour} style={{ background: colour }} />
-                ))}
-              </Slots>
-              <Prose $lead>
-                Goals is a goal tracker for iPhone and Apple Watch with five slots for the year.
-                The limit is the point. Most goal apps let you pile up wishes until the list
-                stops meaning anything. Goals makes you pick.
+              <Prose>
+                Choosing what goes in a slot is the work this app exists to make you do. The home
+                screen is five full width blocks that fill the screen exactly, so there is
+                visibly no room for another one.
               </Prose>
-              <AppStoreNote />
-              <Requirement>iPhone and Apple Watch. iOS 26 or later.</Requirement>
+              <Prose>
+                Everything else in the app follows from that. A goal is worth a milestone track
+                and a habit schedule because there are only ever five of them.
+              </Prose>
             </div>
-            <HeroShot>
-              <Shot
-                src="/goals/images/home.png"
-                width={804}
-                height={1748}
-                alt="The Goals home screen: five full width colour blocks, one for each goal, each showing its title and how far along it is."
+          </StatementLayout>
+        </Column>
+      </Band>
+
+      <Column>
+        <Section>
+          <Eyebrow>How a goal is made</Eyebrow>
+          <H2>Shape it first. Then commit.</H2>
+          <Prose>
+            A goal is a draft until you lock it in, and a draft tracks nothing. That gap is
+            deliberate: it is the difference between writing something down and deciding to do
+            it.
+          </Prose>
+          <Steps>
+            <li>
+              <H3>Pick the slot</H3>
+              <p>
+                Name the goal and give it a colour. It lands in one of five blocks on the home
+                screen and it is yours for the year.
+              </p>
+            </li>
+            <li>
+              <H3>Shape the plan</H3>
+              <p>
+                Add milestones, tasks and habits. Rearrange them, delete the whole thing, start
+                over. Nothing is being tracked yet.
+              </p>
+            </li>
+            <li>
+              <H3>Lock it in</H3>
+              <p>
+                Set a target date and commit. The plan freezes, the habits start coming due, and
+                the progress bar starts telling the truth.
+              </p>
+            </li>
+          </Steps>
+        </Section>
+      </Column>
+
+      <Rule />
+
+      <Column>
+        <Section>
+          <Split $pictureFirst>
+            <figure>
+              <PhoneFrame
+                shot="detail"
+                alt="A goal called Run a marathon, locked in, at 62 percent and on track, showing a milestone track with three checkpoints done and one in progress."
               />
-            </HeroShot>
-          </Hero>
-        </Column>
+            </figure>
+            <div>
+              <Eyebrow>Milestones</Eyebrow>
+              <H2>A route, not a to do list.</H2>
+              <Prose>
+                Milestones are the checkpoints a goal actually passes through, joined in order so
+                they read as a route. 5K, 10K, half marathon, the long run, race day. You can see
+                where you are on it without counting anything.
+              </Prose>
+              <Prose>
+                They carry most of a goal&rsquo;s progress, because finishing a checkpoint is
+                worth more than ticking an errand. Progress is 70% milestones and 30% tasks, and
+                when there is nothing to measure yet it says nothing rather than zero.
+              </Prose>
+              <Items>
+                <div>
+                  <H3>Pace</H3>
+                  <dd>
+                    A mark on the bar for where you should be by now, and a reading that says on
+                    track, or how far behind.
+                  </dd>
+                </div>
+              </Items>
+            </div>
+          </Split>
+        </Section>
+      </Column>
 
-        <Rule />
+      <Rule />
 
+      <Column>
+        <Section>
+          <Split>
+            <div>
+              <Eyebrow>Tasks</Eyebrow>
+              <H2>The errands that stand in the way.</H2>
+              <Prose>
+                Not everything on the way to a goal is a milestone. Buy the shoes. Book the race.
+                Open the account. Tasks are the one off things that have to happen, and they are
+                done when they are done.
+              </Prose>
+              <Prose>
+                One screen collects them across all five goals, grouped by goal and tinted in its
+                colour, so a spare ten minutes has somewhere to go without opening anything.
+              </Prose>
+            </div>
+            <figure>
+              <PhoneFrame
+                shot="tasks"
+                alt="The tasks screen, showing every goal's tasks grouped under its name, each group tinted in that goal's colour."
+              />
+            </figure>
+          </Split>
+        </Section>
+      </Column>
+
+      <Rule />
+
+      <Column>
+        <Section>
+          <Eyebrow>Habits</Eyebrow>
+          <H2>The part you actually do every day.</H2>
+          <Prose $lead>
+            Habits are the engine. Daily, weekly, or a set number of times a week. Every period
+            writes exactly one row, done or missed, and that record is what streaks and history
+            are built from.
+          </Prose>
+          <Grid>
+            <div>
+              <H3>Streaks that do not lie</H3>
+              <dd>
+                A streak counts back from the last day you logged, not from today, so a day you
+                have not got to yet never breaks one. A habit that was paused is never recorded
+                as missed.
+              </dd>
+            </div>
+            <div>
+              <H3>The whole history</H3>
+              <dd>
+                Every habit keeps its current streak, its longest, its completions and its rate
+                over the last ninety days, with the days themselves underneath.
+              </dd>
+            </div>
+          </Grid>
+          <Pair>
+            <figure>
+              <PhoneFrame
+                width="100%"
+                shot="habits"
+                alt="The habits screen, showing today and the days before it, each habit tagged with the colour of the goal it belongs to."
+              />
+            </figure>
+            <figure>
+              <PhoneFrame
+                width="100%"
+                shot="habitdetail"
+                alt="One habit's detail screen, showing a three day current streak, a six day longest streak, 63 completions and 70 percent over the last ninety days."
+              />
+            </figure>
+          </Pair>
+        </Section>
+      </Column>
+
+      <Band>
         <Column>
           <Section>
-            <Split>
-              <div>
-                <Eyebrow>Drafts</Eyebrow>
-                <H2>Shape it first. Then commit.</H2>
-                <Prose>
-                  A goal starts as a draft. While it is a draft you can shape it however you
-                  want: add milestones, tasks and habits, rearrange them, delete the whole thing
-                  and start over. Nothing is tracked yet.
-                </Prose>
-                <Prose>
-                  When you are sure, you lock it in. The plan freezes, the target date is set,
-                  and tracking starts. Choosing what goes in a slot is the work this app exists
-                  to make you do.
-                </Prose>
-              </div>
-              <ShotFrame>
-                <Shot
-                  src="/goals/images/detail.png"
-                  width={804}
-                  height={1748}
-                  alt="A goal called Run a marathon, locked in, at 62 percent and on track, with a milestone track, a task list and a habit."
-                />
-              </ShotFrame>
-            </Split>
-          </Section>
-        </Column>
-
-        <Rule />
-
-        <Column>
-          <Section>
-            <Eyebrow>Inside a goal</Eyebrow>
-            <H2>Three ways to say what it takes.</H2>
+            <Eyebrow>Off the phone</Eyebrow>
+            <H2>On your wrist and on your home screen.</H2>
             <Prose>
-              Progress comes from what has actually happened. When there is nothing to measure
-              yet, the app says nothing rather than zero.
+              Most of using this app is checking one thing off. That should not need the app.
             </Prose>
-            <Grid>
-              <div>
-                <H3>Milestones</H3>
-                <dd>
-                  The checkpoints, joined in order so they read as a route rather than a list.
-                  Most of a goal&rsquo;s progress is these.
-                </dd>
-              </div>
-              <div>
-                <H3>Tasks</H3>
-                <dd>One off things that have to happen. Checked off as they get done.</dd>
-              </div>
-              <div>
-                <H3>Habits</H3>
-                <dd>
-                  Daily, weekly, or a set number of times a week. Each one keeps a streak and a
-                  history you can look back through.
-                </dd>
-              </div>
-              <div>
-                <H3>Pace</H3>
-                <dd>
-                  A mark on the bar for where you should be by now, and a reading that says on
-                  track, or how far behind.
-                </dd>
-              </div>
-            </Grid>
+            <Surfaces>
+              <SurfaceCard>
+                <div>
+                  <h3>Apple Watch</h3>
+                  <p>
+                    Your goals and the habits due today, tickable from the wrist. Complications
+                    put one on the watch face.
+                  </p>
+                </div>
+                <WatchFrame alt="The Goals watch app, showing three goal blocks with their progress." />
+              </SurfaceCard>
+              <SurfaceCard>
+                <div>
+                  <h3>Widgets</h3>
+                  <p>
+                    Home screen and Lock Screen, in every size: one goal and its progress, what
+                    is left to do, or the habits still due today. Check things off without
+                    opening anything.
+                  </p>
+                </div>
+                <WidgetShot />
+              </SurfaceCard>
+            </Surfaces>
           </Section>
         </Column>
+      </Band>
 
-        <Rule />
-
-        <Column>
-          <Section>
-            <Split $shotFirst>
-              <ShotFrame>
-                <Shot
-                  src="/goals/images/habits.png"
-                  width={804}
-                  height={1748}
-                  alt="The habits screen, showing today and the days before it, each habit tagged with the colour of the goal it belongs to."
-                />
-              </ShotFrame>
-              <div>
-                <Eyebrow>Every day</Eyebrow>
-                <H2>Checking things off is the whole job.</H2>
-                <Prose>
-                  Habits come due on the schedule you set. Every period writes one row, done or
-                  missed, and that record is what streaks and history are built from. A streak
-                  walks back from the last day you logged, so a day you have not got to yet
-                  never breaks one.
-                </Prose>
-                <Prose>
-                  The rest of the time the app stays out of the way. It states a reading and
-                  stops.
-                </Prose>
+      <Column>
+        <Section>
+          <Eyebrow>And the rest</Eyebrow>
+          <H2>Everything else it does.</H2>
+          <Grid>
+            {SMALL_FEATURES.map((feature) => (
+              <div key={feature.name}>
+                <H3>{feature.name}</H3>
+                <dd>{feature.detail}</dd>
               </div>
-            </Split>
-          </Section>
-        </Column>
+            ))}
+          </Grid>
+        </Section>
+      </Column>
 
-        <Rule />
+      <Rule />
 
-        <Column>
-          <Section>
-            <Eyebrow>Everywhere else</Eyebrow>
-            <H2>On the wrist, on the home screen, in search.</H2>
-            <Grid>
-              <div>
-                <H3>Apple Watch</H3>
-                <dd>Habits due today, tickable from the wrist. Complications on the face.</dd>
-              </div>
-              <div>
-                <H3>Widgets</H3>
-                <dd>Home screen and Lock Screen, in every size.</dd>
-              </div>
-              <div>
-                <H3>Siri and Shortcuts</H3>
-                <dd>Check off a habit, or ask what is due.</dd>
-              </div>
-              <div>
-                <H3>Spotlight</H3>
-                <dd>Goals and habits are indexed, so search finds them.</dd>
-              </div>
-              <div>
-                <H3>Templates</H3>
-                <dd>
-                  Seven categories of goal shapes to start from, editable before you commit to
-                  one.
-                </dd>
-              </div>
-              <div>
-                <H3>Export</H3>
-                <dd>Everything you have written, as Markdown, whenever you want it.</dd>
-              </div>
-            </Grid>
-          </Section>
-        </Column>
+      <Column>
+        <Section>
+          <Eyebrow>Privacy</Eyebrow>
+          <H2>Nothing leaves the device.</H2>
+          <Prose $lead>
+            There is no account and no sign up. Nothing is collected, nothing is tracked, and
+            nothing is sent anywhere. Your goals are stored on your phone, and the only way
+            anything gets out is if you export it yourself.
+          </Prose>
+          <Prose>
+            The App Store privacy label for Goals says Data Not Collected, and that is the whole
+            of it. <a href="/goals/privacy/">Read the privacy policy</a>.
+          </Prose>
+        </Section>
+      </Column>
 
-        <Rule />
-
-        <Column>
-          <Section>
-            <Eyebrow>Privacy</Eyebrow>
-            <H2>Nothing leaves the device.</H2>
-            <Prose>
-              There is no account and no sign up. Nothing is collected, nothing is tracked, and
-              nothing is sent anywhere. Your goals are stored on your phone, and the only way
-              anything gets out is if you export it yourself.
-            </Prose>
-            <Prose>
-              The App Store privacy label for Goals says Data Not Collected, and that is the
-              whole of it. <a href="/goals/privacy/">Read the privacy policy</a>.
-            </Prose>
-          </Section>
-        </Column>
-
-        <Rule />
-
+      <Band>
         <Column>
           <Section>
             <Eyebrow>Price</Eyebrow>
             <H2>One goal is free. Five is the subscription.</H2>
             <Prose>
-              The first goal slot is free with no time limit. A subscription unlocks all five,
-              paid monthly, yearly, or once.
-            </Prose>
-            <Plans>
-              {PLANS.map((plan) => (
-                <Plan key={plan.name}>
-                  <h3>{plan.name}</h3>
-                  <Price>{plan.price}</Price>
-                  <p>{plan.note}</p>
-                </Plan>
-              ))}
-            </Plans>
-            <Prose>
               The subscription gates exactly one thing: how many goals you can have locked in at
               once. The watch app, the widgets, the templates, the history and the export are
               free, and they stay free.
             </Prose>
+            <Tiers>
+              {PLANS.map((plan) => (
+                <Tier key={plan.name} $featured={Boolean(plan.featured)}>
+                  {plan.badge ? <Badge>{plan.badge}</Badge> : null}
+                  <h3>{plan.name}</h3>
+                  <Price>
+                    {plan.price}
+                    <span>{plan.period}</span>
+                  </Price>
+                  <TierNote>{plan.note}</TierNote>
+                  <ul>
+                    {plan.includes.map((line) => (
+                      <li key={line}>
+                        <Tick />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Tier>
+              ))}
+            </Tiers>
           </Section>
         </Column>
+      </Band>
 
-        <Rule />
-
-        <Column>
-          <Section>
-            <Eyebrow>Who made it</Eyebrow>
-            <Signature>
+      <Column>
+        <Section>
+          <Eyebrow>Who made it</Eyebrow>
+          <Signature>
+            <img
+              src="/goals/images/jake.jpg"
+              width={400}
+              height={400}
+              alt="Jake Flavin at the end of a race."
+              loading="lazy"
+            />
+            <div>
               <Prose>
                 Hi, I&rsquo;m Jake. I&rsquo;m an indie developer. I make apps for the fun of it
-                and put them out into the world, and I keep them free or cheap wherever I can.
-                If Goals is useful to you, subscribing helps. Thanks.
+                and put them out into the world, and I keep them free or cheap wherever I can. If
+                Goals is useful to you, subscribing helps. Thanks.
               </Prose>
-            </Signature>
-          </Section>
-        </Column>
-      </main>
-      <Footer />
+              <Prose>
+                The photo is from the marathon. It is also the first goal I ever put in this app.
+              </Prose>
+            </div>
+          </Signature>
+        </Section>
+      </Column>
+
+      <Rule />
+
+      <Column>
+        <Closing>
+          <H2>Pick five things and give them a year.</H2>
+          <Prose $lead style={{ maxWidth: '46ch' }}>
+            The first one is free, with no trial to run out. Choosing what it is takes longer
+            than downloading the app.
+          </Prose>
+          <Actions style={{ justifyContent: 'center' }}>
+            <Cta />
+          </Actions>
+        </Closing>
+      </Column>
     </>
   )
 }

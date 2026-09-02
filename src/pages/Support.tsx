@@ -13,7 +13,6 @@ import { CONTACT_EMAIL } from '../lib/site'
 export function Support() {
   return (
     <Document
-      page="support"
       title="Support"
       standfirst="Goals is made by one person, and email is the whole support system. Write to me and I will answer."
     >

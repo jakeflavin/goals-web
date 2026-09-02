@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
-"""Draws the two images this site cannot write as markup: the app icon and the
+"""Turns the raw captures in `src/shots/` into the images the site ships, and
+draws the two things that are not photographs of anything: the app icon and the
 social card.
-
-The icon is a literal port of `Tools/make-app-icon.py` in the Goals repo — the
-same accent, the same tick geometry, the same ratios. If that file moves, this
-one moves with it, or the site starts showing an icon the App Store does not.
 
     python3 scripts/make-images.py
 
-Everything else on this site is drawn in CSS or is a screenshot of the running
-app, so this script is the whole of the generated-asset story.
+Raw captures are committed under `src/shots/` so this is reproducible without
+going back to a simulator. They come from:
+
+    xcrun simctl ui <device> appearance dark|light
+    xcrun simctl openurl <device> goals://home        # also habits, tasks
+    xcrun simctl io <device> screenshot out.png
+
+and the watch shot from the paired watch simulator running `GoalsWatch`. Every
+phone screen is captured twice, once per appearance, because the site has a
+light mode and a screenshot that ignores it is worse than no screenshot.
 """
 
+import os
 from PIL import Image, ImageDraw, ImageFont
 
 ACCENT = (0x25, 0x63, 0xEB)  # DS.Accent.blue, light-scheme value
@@ -24,6 +30,19 @@ CHECK_WEIGHT = 0.34  # stroke weight as a ratio of that radius
 CORNER = 0.2237      # iOS icon corner radius as a ratio of the side
 
 FONT = "/System/Library/Fonts/SFNS.ttf"
+
+SRC = "src/shots"
+OUT = "public/images"
+
+# Phone screens, both appearances. 720px wide is a 3x phone at 240 CSS px, which
+# is about as large as any of them is ever drawn on the page.
+PHONES = ["home", "detail", "habits", "tasks", "habitdetail"]
+PHONE_WIDTH = 720
+
+# The widget shot is a whole home screen; only the two widgets are the point, so
+# it is cut down to them. Left, top, right, bottom in the capture's own pixels.
+WIDGET_CROP = (0, 200, 1206, 1450)
+WIDGET_WIDTH = 860
 
 
 def tick(draw, size, origin=(0, 0)):
@@ -84,12 +103,42 @@ def social():
     return image
 
 
+def scale(image, width):
+    return image.resize((width, round(image.height * width / image.width)), Image.LANCZOS)
+
+
+def save(image, path):
+    image.save(path, optimize=True)
+    print(f"wrote {path} ({os.path.getsize(path) // 1024} KB)")
+
+
 def main():
+    os.makedirs(OUT, exist_ok=True)
+
+    for name in PHONES:
+        for scheme in ("light", "dark"):
+            source = Image.open(f"{SRC}/{name}-{scheme}.png").convert("RGB")
+            save(scale(source, PHONE_WIDTH), f"{OUT}/{name}-{scheme}.png")
+
+    # JPEG, not PNG: most of this crop is a photographic wallpaper, and as a PNG
+    # it was half a megabyte for a picture drawn 540px wide.
+    for scheme in ("light", "dark"):
+        source = Image.open(f"{SRC}/widgets-{scheme}.png").convert("RGB").crop(WIDGET_CROP)
+        path = f"{OUT}/widgets-{scheme}.jpg"
+        scale(source, WIDGET_WIDTH).save(path, quality=88, optimize=True, progressive=True)
+        print(f"wrote {path} ({os.path.getsize(path) // 1024} KB)")
+
+    # The watch screen is captured at its own size and is never drawn larger.
+    save(Image.open(f"{SRC}/watch.png").convert("RGB"), f"{OUT}/watch.png")
+
+    # The same photograph the app's own paywall shows, so the face on the site
+    # and the face in the app are one person rather than two.
+    save(Image.open(f"{SRC}/jake.jpg").convert("RGB"), f"{OUT}/jake.jpg")
+
     for size, name in [(512, "icon-512.png"), (180, "apple-touch-icon.png"), (64, "favicon.png")]:
         icon(size).save(f"public/{name}")
         print(f"wrote public/{name}")
-    social().save("public/images/social.png")
-    print("wrote public/images/social.png")
+    save(social(), f"{OUT}/social.png")
 
 
 if __name__ == "__main__":

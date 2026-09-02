@@ -1,17 +1,25 @@
 import styled from 'styled-components'
 import { Mark } from './Mark'
+import { Cta } from './Cta'
+import { ThemeToggle } from './ThemeToggle'
 import { Column } from './primitives'
 import { CONTACT_EMAIL } from '../lib/site'
+import type { Mode } from '../theme'
 
 /**
  * The header and footer, identical on all three pages.
  *
- * Both are quiet on purpose. The header is a wordmark and two links; there is
- * no navigation to build because there are only three pages, and a page with
- * three pages in it does not need a menu.
+ * The header carries the wordmark, the scheme toggle and the download button,
+ * and nothing else. There is no navigation to build: there are three pages, and
+ * a site with three pages does not need a menu. The download button is here so
+ * that a reader who decides at any point on the page can act without scrolling.
  */
 
 const Bar = styled.header`
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: ${({ theme }) => theme.color.canvas};
   border-bottom: 1px solid ${({ theme }) => theme.color.border};
 `
 
@@ -19,8 +27,8 @@ const BarInner = styled(Column)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.space.s5};
-  height: 68px;
+  gap: ${({ theme }) => theme.space.s4};
+  height: 64px;
 `
 
 const Wordmark = styled.a`
@@ -33,23 +41,28 @@ const Wordmark = styled.a`
   text-decoration: none;
 `
 
-const Links = styled.nav`
+const Right = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.space.s6};
-  font-size: 0.9375rem;
+  gap: ${({ theme }) => theme.space.s4};
 
-  a {
-    color: ${({ theme }) => theme.color.textSecondary};
-    text-decoration: none;
-  }
-
-  a:hover {
-    color: ${({ theme }) => theme.color.text};
+  /* Under 560px the download button and the toggle fight for the same room.
+     The button is the one that has a second copy further down the page. */
+  @media (max-width: 560px) {
+    a[href*='apps.apple'],
+    p {
+      display: none;
+    }
   }
 `
 
-export function Header({ current }: { current?: 'privacy' | 'support' }) {
+export function Header({
+  mode,
+  onChangeMode,
+}: {
+  mode: Mode
+  onChangeMode: (mode: Mode) => void
+}) {
   return (
     <Bar>
       <BarInner>
@@ -57,14 +70,10 @@ export function Header({ current }: { current?: 'privacy' | 'support' }) {
           <Mark size={26} title="Goals" />
           Goals
         </Wordmark>
-        <Links>
-          <a href="/goals/privacy/" aria-current={current === 'privacy' ? 'page' : undefined}>
-            Privacy
-          </a>
-          <a href="/goals/support/" aria-current={current === 'support' ? 'page' : undefined}>
-            Support
-          </a>
-        </Links>
+        <Right>
+          <ThemeToggle mode={mode} onChange={onChangeMode} />
+          <Cta size="sm" />
+        </Right>
       </BarInner>
     </Bar>
   )
@@ -96,7 +105,7 @@ const FootInner = styled(Column)`
   }
 
   a:hover {
-    color: ${({ theme }) => theme.color.text};
+    color: ${({ theme }) => theme.color.textPrimary};
   }
 `
 

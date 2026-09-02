@@ -1,7 +1,6 @@
 import { StrictMode, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ThemeProvider } from 'styled-components'
-import { theme } from './theme'
+import { Shell } from './components/Shell'
 import './index.css'
 
 /**
@@ -16,7 +15,7 @@ export function mount(page: ReactNode) {
 
   createRoot(root).render(
     <StrictMode>
-      <ThemeProvider theme={theme}>{page}</ThemeProvider>
+      <Shell>{page}</Shell>
     </StrictMode>,
   )
 }

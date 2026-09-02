@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/png" href="/goals/favicon.png" />
     <link rel="apple-touch-icon" href="/goals/apple-touch-icon.png" />
     <link rel="canonical" href="https://portfolio-4b9fe.web.app/goals/privacy/" />
@@ -19,6 +19,30 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Decide light or dark BEFORE the first paint. An explicit choice made on
+      // this site wins; otherwise the system decides. React reads this attribute
+      // back rather than deciding again, so the two can never disagree.
+      //
+      // This is inline and blocking on purpose: as a module it would run after
+      // paint, which is the flash it exists to prevent.
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('goals.theme')
+          var mode =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+          document.documentElement.dataset.theme = mode
+          document.documentElement.style.colorScheme = mode
+        } catch (error) {
+          // Site data blocked, or no matchMedia. Dark is the app's own default.
+          document.documentElement.dataset.theme = 'dark'
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

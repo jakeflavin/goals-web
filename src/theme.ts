@@ -1,31 +1,60 @@
 /**
- * The app's design tokens, ported exactly.
+ * The app's design tokens, ported exactly, in both schemes.
  *
- * Goals is dark-first and its canvas is true black, so this site is dark and
- * only dark. That is a decision rather than an omission: the black canvas with
- * one blue accent *is* the app's face, and a light variant of this page would
- * show something nobody who downloads it will see first.
+ * Goals has a light mode and a dark one and they are not symmetric: each accent
+ * is a *pair*, a bright cut for the black canvas and a deepened cut of the same
+ * hue for the white one, chosen so the accent passes WCAG AA as text on its own
+ * canvas in both. Taking one value and using it on both grounds is the mistake
+ * that pairing exists to prevent, so this file carries the pairs and nothing
+ * reads a raw hex anywhere else.
+ *
+ * Source: `GoalsKit/Sources/GoalsKit/Design/DesignTokens.swift`.
  */
-export const theme = {
-  color: {
-    /** `DS.canvas`, dark. */
+
+export type Mode = 'light' | 'dark'
+
+const palette = {
+  light: {
+    /** `DS.canvas` */
+    canvas: '#FFFFFF',
+    /** `DS.surface` — panels and cards. */
+    surface: '#F2F2F2',
+    /** `DS.surfaceAlt` — a recess inside a surface. */
+    surfaceAlt: '#E5E5E7',
+    /** One step deeper than the canvas, for a band that has to separate itself. */
+    canvasAlt: '#FAFAFA',
+    textPrimary: '#0A0A0A',
+    textSecondary: '#6B6B70',
+    /** `DS.border` */
+    border: 'rgba(0, 0, 0, 0.08)',
+    /** A rule that has to be visible against a surface rather than the canvas. */
+    borderStrong: 'rgba(0, 0, 0, 0.14)',
+    /** `DS.Accent.blue`, light cut. Also the icon fill. */
+    accent: '#2563EB',
+    /** `Accent.ink` on that fill. */
+    ink: '#FFFFFF',
+    /** The phone bezel. Reads as hardware in both schemes. */
+    bezel: '#D8D8DC',
+    bezelEdge: 'rgba(0, 0, 0, 0.16)',
+  },
+  dark: {
     canvas: '#000000',
-    /** `DS.surface`, dark — panels and cards. */
     surface: '#1C1C1E',
-    /** `DS.surfaceAlt`, dark — a recess inside a surface. */
     surfaceAlt: '#2C2C2E',
-    text: '#FFFFFF',
-    /** `DS.textSecondary`, dark. */
+    canvasAlt: '#0A0A0A',
+    textPrimary: '#FFFFFF',
     textSecondary: '#8E8E93',
-    /** `DS.border`, dark. */
     border: 'rgba(255, 255, 255, 0.12)',
+    borderStrong: 'rgba(255, 255, 255, 0.2)',
     /** `DS.Accent.blue`, dark cut. The one that has to read on black. */
     accent: '#60A5FA',
-    /** `DS.Accent.blue`, light cut. The icon fill, and nothing else. */
-    accentDeep: '#2563EB',
-    /** `Accent.ink` on a bright fill. */
     ink: '#0A0A0A',
+    bezel: '#3A3A3C',
+    bezelEdge: 'rgba(255, 255, 255, 0.22)',
   },
+} as const
+
+const shape = {
   radius: {
     sm: '10px',
     md: '20px',
@@ -40,11 +69,21 @@ export const theme = {
     s6: '24px',
     s8: '32px',
     s10: '40px',
+    s12: '48px',
     s16: '64px',
+    s20: '80px',
     s24: '96px',
   },
-  /** The reading column. Wider than prose wants, because the hero is two up. */
-  maxWidth: '1040px',
+  /** The reading column. */
+  maxWidth: '1120px',
 } as const
 
-export type Theme = typeof theme
+export function buildTheme(mode: Mode) {
+  return { mode, color: palette[mode], ...shape }
+}
+
+export type Theme = ReturnType<typeof buildTheme>
+
+/** Prefixed, because every app in the portfolio shares one origin and one
+ *  `localStorage` namespace. An unprefixed `theme` key would be a collision. */
+export const THEME_KEY = 'goals.theme'

@@ -13,7 +13,6 @@ import { CONTACT_EMAIL, POLICY_UPDATED } from '../lib/site'
 export function Privacy() {
   return (
     <Document
-      page="privacy"
       title="Privacy policy"
       standfirst="Goals collects nothing. There is no account, no sign up, no analytics, no advertising and no tracking."
       updated={POLICY_UPDATED}

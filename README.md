@@ -22,6 +22,23 @@ deliberate: the portfolio rewrites every unmatched path to the directory's own
 page, and Hosting serves static files before it applies a rewrite, so a router
 would put the directory page at `/goals/privacy/`. See `vite.config.ts`.
 
+## Light and dark
+
+The site follows the system by default, and a toggle in the header overrides it.
+The choice is remembered under `goals.theme`, prefixed because every app in the
+portfolio shares one origin and therefore one `localStorage` namespace.
+
+Two things make this work rather than flicker:
+
+- **An inline script in each page's `<head>`** writes `data-theme` on `<html>`
+  before the first paint, and `src/index.css` paints the ground from that
+  attribute. React reads the attribute back rather than deciding again, so the
+  two can never disagree.
+- **Every screenshot is captured twice**, and the page swaps the file. The app's
+  two schemes are not inversions of each other: each accent is a pair, a bright
+  cut for the black canvas and a deepened cut for the white one. A filtered or
+  inverted screenshot would show a product that does not exist.
+
 ## Where the content comes from
 
 Nothing on these pages is invented.
@@ -29,18 +46,20 @@ Nothing on these pages is invented.
 - **The pitch** is the App Store description, in the same voice, because they
   describe the same product to the same person.
 - **The screenshots** are the real app running with its `-seed` launch argument,
-  captured from a simulator. Not mockups, and no drawn device frames.
+  captured from a simulator. Not mockups, and the phone and watch frames are
+  drawn rather than photographed.
 - **The design tokens** in `src/theme.ts` are `DS` from
-  `GoalsKit/Sources/GoalsKit/Design/DesignTokens.swift`, hex for hex.
+  `GoalsKit/Sources/GoalsKit/Design/DesignTokens.swift`, hex for hex, in both
+  schemes.
 - **The icon** in `src/components/Mark.tsx` is `Tools/make-app-icon.py` from the
   Goals repo, ratio for ratio, drawn as SVG so it stays sharp.
+- **The photograph** is the same one the app's own paywall shows, so the face on
+  the site and the face in the app are one person rather than two.
+- **The prices** are the App Store Connect products, and the 44% saving is the
+  real arithmetic rather than a rounder number chosen for the page.
 - **The privacy claims** were each checked against the app rather than
-  remembered. The app has no third party dependencies, makes no network requests
-  of its own, and stores everything in its own container.
-
-The page is dark and only dark. The black canvas with one blue accent is the
-app's face, and a light variant would show something nobody who downloads it
-sees first.
+  remembered. It has no third party dependencies, makes no network requests of
+  its own, and stores everything in its own container.
 
 ## Commands
 
@@ -59,12 +78,27 @@ been caught by eye once.
 
 ## Regenerating the images
 
-The icon files and the social card are drawn rather than hand made:
+The raw captures live in `src/shots/` and are committed, so the whole image
+pipeline reproduces without going back to a simulator:
 
 ```bash
 python3 scripts/make-images.py
 ```
 
-Screenshots are recaptured by building the Goals app for a simulator, launching
-it with `-seed`, and taking them by hand. They go stale when the app's UI
-changes and nothing detects it.
+That resizes every screenshot, crops the widget shots down to the widgets, and
+draws the two things that are not photographs of anything: the app icon and the
+social card.
+
+Recapturing needs a booted simulator with the app installed and seeded:
+
+```bash
+xcrun simctl ui booted appearance dark
+xcrun simctl launch booted com.flavin.goals -seed
+xcrun simctl openurl booted goals://habits
+xcrun simctl io booted screenshot src/shots/habits-dark.png
+```
+
+Every phone screen is captured once per appearance. The watch shot comes from
+the paired watch simulator running `GoalsWatch`, which has no light mode and so
+has one capture. Screenshots go stale when the app's UI changes and nothing
+detects it.
