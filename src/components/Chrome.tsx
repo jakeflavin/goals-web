@@ -48,7 +48,7 @@ const Right = styled.div`
 
   /* Under 560px the download button and the toggle fight for the same room.
      The button is the one that has a second copy further down the page. */
-  @media (max-width: 560px) {
+  @media (max-width: ${({ theme }) => theme.bp.sm}) {
     a[href*='apps.apple'],
     p {
       display: none;

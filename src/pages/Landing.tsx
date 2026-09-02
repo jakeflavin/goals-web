@@ -47,10 +47,9 @@ const Hero = styled(Section)`
   align-items: center;
   padding-top: ${({ theme }) => theme.space.s16};
 
-  @media (max-width: 900px) {
+  @media (max-width: ${({ theme }) => theme.bp.lg}) {
     grid-template-columns: 1fr;
     gap: ${({ theme }) => theme.space.s12};
-    text-align: left;
   }
 `
 
@@ -100,48 +99,93 @@ const StatementLayout = styled(Section)`
   gap: ${({ theme }) => theme.space.s16};
   align-items: center;
 
-  @media (max-width: 900px) {
+  @media (max-width: ${({ theme }) => theme.bp.lg}) {
     grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.space.s8};
+    gap: ${({ theme }) => theme.space.s12};
   }
 `
 
 // ---------------------------------------------------------------- steps
 
-const Steps = styled.ol`
+/**
+ * The three steps, drawn as the app's own milestone track.
+ *
+ * This was three columns with a 2px accent rule over each and 01/02/03 above
+ * them, which is the house style of every SaaS page ever built and said nothing
+ * about this product. The track is the app's real vocabulary: milestones are
+ * nodes joined by a connector, and the whole point of them is that they read as
+ * a route rather than a list. Making a goal is a route too.
+ *
+ * The accent appears as three dots rather than three rules, which is most of
+ * why the quiet version is quieter.
+ *
+ * It runs across on a wide screen and down on a narrow one, and down is the
+ * orientation the app itself draws, so the phone version of this section looks
+ * like a screen from the thing it is describing.
+ */
+const Track = styled.ol`
   list-style: none;
-  counter-reset: step;
   margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: ${({ theme }) => theme.space.s6};
-
-  @media (max-width: 800px) {
-    grid-template-columns: 1fr;
-  }
+  gap: ${({ theme }) => theme.space.s8};
 
   li {
-    counter-increment: step;
-    padding-top: ${({ theme }) => theme.space.s5};
-    border-top: 2px solid ${({ theme }) => theme.color.accent};
+    position: relative;
+    padding-top: ${({ theme }) => theme.space.s8};
   }
 
+  /* The node. */
   li::before {
-    content: counter(step, decimal-leading-zero);
-    display: block;
-    margin-bottom: ${({ theme }) => theme.space.s3};
-    font-size: 0.8125rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: ${({ theme }) => theme.color.accent};
-    font-variant-numeric: tabular-nums;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.color.accent};
+  }
+
+  /* The connector, reaching across the gap to the next node. */
+  li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 13px;
+    right: calc(-1 * ${({ theme }) => theme.space.s8});
+    height: 1px;
+    background: ${({ theme }) => theme.color.borderStrong};
   }
 
   p {
     margin: 0;
     color: ${({ theme }) => theme.color.textSecondary};
     font-size: 0.9375rem;
+  }
+
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.space.s6};
+
+    li {
+      padding-top: 0;
+      padding-left: ${({ theme }) => theme.space.s8};
+    }
+
+    li::before {
+      top: 6px;
+    }
+
+    li:not(:last-child)::after {
+      top: 19px;
+      bottom: calc(-1 * ${({ theme }) => theme.space.s6});
+      left: 6px;
+      right: auto;
+      width: 1px;
+      height: auto;
+    }
   }
 `
 
@@ -174,7 +218,7 @@ const Pair = styled.div`
 
   /* Two phones side by side on a phone is two phones nobody can read: at 390px
      they land at about 170px each. Stacked and capped, they stay legible. */
-  @media (max-width: 720px) {
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
     grid-template-columns: 1fr;
     gap: ${({ theme }) => theme.space.s8};
 
@@ -193,9 +237,9 @@ const Pair = styled.div`
 const Surfaces = styled.div`
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
-  gap: ${({ theme }) => theme.space.s6};
+  gap: ${({ theme }) => theme.space.s4};
 
-  @media (max-width: 800px) {
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
     grid-template-columns: 1fr;
   }
 `
@@ -257,11 +301,11 @@ const Tiers = styled.div`
   gap: ${({ theme }) => theme.space.s4};
   align-items: stretch;
 
-  @media (max-width: 980px) {
+  @media (max-width: ${({ theme }) => theme.bp.lg}) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 560px) {
+  @media (max-width: ${({ theme }) => theme.bp.sm}) {
     grid-template-columns: 1fr;
   }
 `
@@ -306,7 +350,8 @@ const Tier = styled.div<{ $featured: boolean }>`
   svg {
     width: 14px;
     height: 14px;
-    margin-top: 5px;
+    /* Lines the tick up with the cap height of the first line beside it. */
+    margin-top: ${({ theme }) => theme.space.s1};
     color: ${({ theme }) => theme.color.accent};
   }
 `
@@ -340,7 +385,7 @@ const Badge = styled.span`
   top: 0;
   right: ${({ theme }) => theme.space.s5};
   transform: translateY(-50%);
-  padding: 3px 10px;
+  padding: ${({ theme }) => theme.space.s1} ${({ theme }) => theme.space.s3};
   border-radius: 999px;
   background: ${({ theme }) => theme.color.accent};
   color: ${({ theme }) => theme.color.ink};
@@ -373,7 +418,7 @@ const Signature = styled(Panel)`
     object-fit: cover;
   }
 
-  @media (max-width: 560px) {
+  @media (max-width: ${({ theme }) => theme.bp.sm}) {
     grid-template-columns: 1fr;
   }
 `
@@ -456,7 +501,7 @@ export function Landing() {
             deliberate: it is the difference between writing something down and deciding to do
             it.
           </Prose>
-          <Steps>
+          <Track>
             <li>
               <H3>Pick the slot</H3>
               <p>
@@ -478,7 +523,7 @@ export function Landing() {
                 the progress bar starts telling the truth.
               </p>
             </li>
-          </Steps>
+          </Track>
         </Section>
       </Column>
 

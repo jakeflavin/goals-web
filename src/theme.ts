@@ -74,6 +74,22 @@ const shape = {
     s20: '80px',
     s24: '96px',
   },
+  /**
+   * Three breakpoints, and only three.
+   *
+   * There were five before, at 560, 720, 800, 900 and 980, each chosen for the
+   * one component it was written in. That is how a page ends up rearranging
+   * itself four separate times between a tablet and a phone, with a different
+   * gutter after each one. Every query in the site now names one of these.
+   */
+  bp: {
+    /** A phone. Below this, one column of anything. */
+    sm: '560px',
+    /** A small tablet, or a phone on its side. */
+    md: '760px',
+    /** Where two columns of substance stop fitting side by side. */
+    lg: '980px',
+  },
   /** The reading column. */
   maxWidth: '1120px',
 } as const

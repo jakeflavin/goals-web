@@ -16,10 +16,27 @@ export const Column = styled.div`
   padding: 0 ${({ theme }) => theme.space.s6};
 `
 
+/**
+ * The vertical rhythm, and the numbers the whole page is spaced by.
+ *
+ * One step per breakpoint. It used to be two, 96 above `lg` and 64 below it,
+ * which gave an 834px tablet exactly the same rhythm as a 390px phone.
+ *
+ * The rest of the spacing follows three rules, and every grid on the page uses
+ * one of them:
+ *
+ * - Columns of prose in one section: `s16` side by side, `s12` once stacked.
+ * - Cards in a grid: `s4`.
+ * - Items in a hairline list: `s6`.
+ */
 export const Section = styled.section`
   padding: ${({ theme }) => theme.space.s24} 0;
 
-  @media (max-width: 900px) {
+  @media (max-width: ${({ theme }) => theme.bp.lg}) {
+    padding: ${({ theme }) => theme.space.s20} 0;
+  }
+
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
     padding: ${({ theme }) => theme.space.s16} 0;
   }
 `
@@ -76,6 +93,8 @@ export const Eyebrow = styled.p`
 
 export const Prose = styled.p<{ $lead?: boolean }>`
   margin: 0 0 ${({ theme }) => theme.space.s5};
+  /* The measure. A ch is the width of a zero, so 62 of them is about 78 real
+     characters, which is the top of the comfortable range. */
   max-width: 62ch;
   color: ${({ theme }) => theme.color.textSecondary};
 
@@ -84,6 +103,9 @@ export const Prose = styled.p<{ $lead?: boolean }>`
     css`
       font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
       line-height: 1.5;
+      /* Bigger type wants a shorter line, not the same one. At 62ch the hero
+         paragraph ran to about ninety characters on a tablet. */
+      max-width: 50ch;
     `}
 
   a {
@@ -102,7 +124,7 @@ export const Panel = styled.div`
   border-radius: ${({ theme }) => theme.radius.md};
   padding: ${({ theme }) => theme.space.s8};
 
-  @media (max-width: 720px) {
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
     padding: ${({ theme }) => theme.space.s6};
   }
 `
@@ -126,9 +148,9 @@ export const Split = styled.div<{ $pictureFirst?: boolean }>`
     order: ${({ $pictureFirst }) => ($pictureFirst ? -1 : 0)};
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: ${({ theme }) => theme.bp.lg}) {
     grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.space.s10};
+    gap: ${({ theme }) => theme.space.s12};
 
     > figure {
       order: 0;
@@ -142,8 +164,10 @@ export const Items = styled.dl`
   display: grid;
   gap: ${({ theme }) => theme.space.s6};
 
+  /* 24 above the rule and 16 below it, so each rule reads as the top of the
+     item beneath rather than as a divider floating between two. */
   div {
-    padding-top: ${({ theme }) => theme.space.s5};
+    padding-top: ${({ theme }) => theme.space.s4};
     border-top: 1px solid ${({ theme }) => theme.color.border};
   }
 
@@ -157,7 +181,7 @@ export const Items = styled.dl`
 export const Grid = styled(Items)`
   grid-template-columns: 1fr 1fr;
 
-  @media (max-width: 720px) {
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
     grid-template-columns: 1fr;
   }
 `
