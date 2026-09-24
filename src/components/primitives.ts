@@ -5,8 +5,8 @@ import styled, { css } from 'styled-components'
  *
  * No shadows and no gradients, for the same reason there are none in the app
  * (DESIGN.md §14): depth comes from a lifted surface, and a shadow reads as a
- * different design system. The one exception is the phone bezel, which is
- * hardware rather than a panel.
+ * different design system. The device frames draw their own edges because
+ * they are hardware rather than panels, and even they do it with a line.
  */
 
 export const Column = styled.div`
@@ -20,7 +20,10 @@ export const Column = styled.div`
  * The vertical rhythm, and the numbers the whole page is spaced by.
  *
  * One step per breakpoint. It used to be two, 96 above `lg` and 64 below it,
- * which gave an 834px tablet exactly the same rhythm as a 390px phone.
+ * which gave an 834px tablet exactly the same rhythm as a 390px phone. The top
+ * step is 128 rather than 96: at 96 a wide screen showed the end of one section
+ * and the start of the next in the same glance, and a page that never lets one
+ * idea have the screen to itself reads as a brochure.
  *
  * The rest of the spacing follows three rules, and every grid on the page uses
  * one of them:
@@ -30,10 +33,10 @@ export const Column = styled.div`
  * - Items in a hairline list: `s6`.
  */
 export const Section = styled.section`
-  padding: ${({ theme }) => theme.space.s24} 0;
+  padding: ${({ theme }) => theme.space.s32} 0;
 
   @media (max-width: ${({ theme }) => theme.bp.lg}) {
-    padding: ${({ theme }) => theme.space.s20} 0;
+    padding: ${({ theme }) => theme.space.s24} 0;
   }
 
   @media (max-width: ${({ theme }) => theme.bp.md}) {
@@ -55,20 +58,34 @@ export const Rule = styled.hr`
   background: ${({ theme }) => theme.color.border};
 `
 
+/**
+ * The type scale, in SF Pro and nothing else, as the app is (DESIGN.md §3).
+ *
+ * The scale is steep on purpose. A page set at 44px headings over 17px body
+ * reads as a document; the headline here runs to 7.5rem and the section
+ * headings to 3.5rem, tracked in hard as SF Display wants at that size, so
+ * the page has one voice for claims and another for explaining them.
+ */
 export const H1 = styled.h1`
   margin: 0;
-  font-size: clamp(2.75rem, 6.4vw, 4.5rem);
-  line-height: 1.02;
-  letter-spacing: -0.035em;
+  font-size: clamp(3.5rem, 8.6vw, 7.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.05em;
   font-weight: 700;
+
+  span {
+    display: block;
+  }
 `
 
 export const H2 = styled.h2`
-  margin: 0 0 ${({ theme }) => theme.space.s5};
-  font-size: clamp(1.875rem, 3.6vw, 2.75rem);
-  line-height: 1.1;
-  letter-spacing: -0.025em;
+  margin: 0 0 ${({ theme }) => theme.space.s6};
+  max-width: 20ch;
+  font-size: clamp(2.25rem, 4.4vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
   font-weight: 700;
+  text-wrap: balance;
 `
 
 export const H3 = styled.h3`
@@ -79,15 +96,19 @@ export const H3 = styled.h3`
 `
 
 /**
- * The uppercase caption above a section, the same device the app uses over a
- * card. Tracked out, in the accent, and never larger than the body.
+ * The name of the thing a section is about, above its heading.
+ *
+ * Sentence case, in the accent, at body size, which is where the app settled
+ * its own section headers (DESIGN.md §3: an 11pt tracked caption "reads as an
+ * annotation stuck onto the card"). It used to be tracked capitals over every
+ * section on the page; it is now only where a section is about one named part
+ * of the product, so it names something rather than decorating everything.
  */
 export const Eyebrow = styled.p`
-  margin: 0 0 ${({ theme }) => theme.space.s4};
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  margin: 0 0 ${({ theme }) => theme.space.s3};
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: ${({ theme }) => theme.color.accent};
 `
 
@@ -101,8 +122,9 @@ export const Prose = styled.p<{ $lead?: boolean }>`
   ${({ $lead }) =>
     $lead &&
     css`
-      font-size: clamp(1.0625rem, 1.6vw, 1.3125rem);
-      line-height: 1.5;
+      font-size: clamp(1.125rem, 1.7vw, 1.375rem);
+      line-height: 1.45;
+      letter-spacing: -0.01em;
       /* Bigger type wants a shorter line, not the same one. At 62ch the hero
          paragraph ran to about ninety characters on a tablet. */
       max-width: 50ch;

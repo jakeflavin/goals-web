@@ -15,6 +15,11 @@ going back to a simulator. They come from:
 and the watch shot from the paired watch simulator running `GoalsWatch`. Every
 phone screen is captured twice, once per appearance, because the site has a
 light mode and a screenshot that ignores it is worse than no screenshot.
+
+The iPad and the Mac are captured the same way, and the README has the exact
+commands for both, because both need care that the phone does not: the iPad
+has to be told it has five slots, and the Mac has no simulator, so a capture
+there runs against a store of its own that must never sync.
 """
 
 import os
@@ -43,6 +48,11 @@ PHONE_WIDTH = 720
 # it is cut down to them. Left, top, right, bottom in the capture's own pixels.
 WIDGET_CROP = (0, 200, 1206, 1450)
 WIDGET_WIDTH = 860
+
+# The iPad is drawn at most about 480 CSS px wide, the Mac window about 800.
+# Both at 2x. The menu bar panel is captured at 2x of its own width already.
+IPAD_WIDTH = 1000
+MAC_WIDTH = 1600
 
 
 def tick(draw, size, origin=(0, 0)):
@@ -95,7 +105,7 @@ def social():
     draw.text((88, 312), "Five goals. One year.", font=title, fill=INK)
     draw.text(
         (88, 424),
-        "A goal tracker for iPhone and Apple Watch.\nNothing leaves the device.",
+        "A goal tracker for iPhone, iPad, Mac\nand Apple Watch.",
         font=body,
         fill=SECONDARY,
         spacing=14,
@@ -127,6 +137,13 @@ def main():
         path = f"{OUT}/widgets-{scheme}.jpg"
         scale(source, WIDGET_WIDTH).save(path, quality=88, optimize=True, progressive=True)
         print(f"wrote {path} ({os.path.getsize(path) // 1024} KB)")
+
+    for scheme in ("light", "dark"):
+        save(scale(Image.open(f"{SRC}/ipad-{scheme}.png").convert("RGB"), IPAD_WIDTH), f"{OUT}/ipad-{scheme}.png")
+        save(scale(Image.open(f"{SRC}/mac-{scheme}.png").convert("RGB"), MAC_WIDTH), f"{OUT}/mac-{scheme}.png")
+        # RGBA, not RGB: the panel draws its own rounded corners as
+        # transparency, and flattening them would put square corners back.
+        save(Image.open(f"{SRC}/menubar-{scheme}.png").convert("RGBA"), f"{OUT}/menubar-{scheme}.png")
 
     # The watch screen is captured at its own size and is never drawn larger.
     save(Image.open(f"{SRC}/watch.png").convert("RGB"), f"{OUT}/watch.png")

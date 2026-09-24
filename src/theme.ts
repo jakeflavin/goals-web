@@ -33,9 +33,12 @@ const palette = {
     accent: '#2563EB',
     /** `Accent.ink` on that fill. */
     ink: '#FFFFFF',
-    /** The phone bezel. Reads as hardware in both schemes. */
-    bezel: '#D8D8DC',
-    bezelEdge: 'rgba(0, 0, 0, 0.16)',
+    /** The ground a family of devices stands on. One step off the canvas. */
+    stage: '#F5F5F7',
+    /** The glass around every screen. Black in both schemes, because it is. */
+    glass: '#050505',
+    /** The metal band around the glass, the one line that says "hardware". */
+    rim: '#C7C7CC',
   },
   dark: {
     canvas: '#000000',
@@ -49,8 +52,9 @@ const palette = {
     /** `DS.Accent.blue`, dark cut. The one that has to read on black. */
     accent: '#60A5FA',
     ink: '#0A0A0A',
-    bezel: '#3A3A3C',
-    bezelEdge: 'rgba(255, 255, 255, 0.22)',
+    stage: '#0C0C0D',
+    glass: '#050505',
+    rim: '#48484A',
   },
 } as const
 
@@ -73,6 +77,7 @@ const shape = {
     s16: '64px',
     s20: '80px',
     s24: '96px',
+    s32: '128px',
   },
   /**
    * Three breakpoints, and only three.

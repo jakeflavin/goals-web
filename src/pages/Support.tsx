@@ -19,8 +19,8 @@ export function Support() {
       <h2>Getting in touch</h2>
       <p>
         Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. If something is broken,
-        it helps to say which iPhone you are on, which version of iOS, and what you did just
-        before it happened. I read everything, and I answer as fast as one person can.
+        it helps to say which device you are on, which version of iOS or macOS, and what you
+        did just before it happened. I read everything, and I answer as fast as one person can.
       </p>
       <p>
         Bug reports and feature requests go to the same address. There is no forum and no
@@ -44,8 +44,9 @@ export function Support() {
 
       <h2>How do I cancel?</h2>
       <p>
-        In the Settings app on your iPhone, tap your name, then Subscriptions, then Goals.
-        Cancelling there stops the renewal and you keep the subscription until the period you
+        In the Settings app on your iPhone or iPad, tap your name, then Subscriptions, then
+        Goals. On a Mac, open the App Store, click your name, then Account Settings, then
+        Subscriptions. Cancelling stops the renewal and you keep the subscription until the period you
         already paid for runs out.
       </p>
 
@@ -60,9 +61,14 @@ export function Support() {
 
       <h2>Does it sync between my devices?</h2>
       <p>
-        No. Goals stores everything on the device it is running on, and there is no account to
-        sync through. The Apple Watch app reads from the iPhone it is paired with. Moving to a
-        new iPhone works through a device backup restore, the same as the rest of your apps.
+        Yes, through your own iCloud. Goals, habits and history stay the same on every iPhone,
+        iPad and Mac signed in to the same Apple Account, with no Goals account to make. Sync is
+        on by default and can be turned off in Settings; the change takes effect the next time
+        the app opens. The Apple Watch app reads from the iPhone it is paired with.
+      </p>
+      <p>
+        If a device is not catching up, check that it is signed in to iCloud and that Settings
+        in Goals shows sync as up to date.
       </p>
 
       <h2>Can I get my goals out?</h2>
@@ -74,9 +80,18 @@ export function Support() {
 
       <h2>How do I delete everything?</h2>
       <p>
-        Settings has Delete all goals. It asks first, and it cannot be undone. Deleting the app
-        removes everything too. Nothing is stored anywhere but the device, so there is no copy
-        left behind.
+        Settings has Delete all goals. It asks first, and it cannot be undone. With sync on it
+        removes everything from your iCloud and from every device signed in to it. Deleting the
+        app from one device does not touch the copy in your iCloud, which is what lets a
+        reinstall bring your goals back.
+      </p>
+
+      <h2>How do I connect an AI agent on the Mac?</h2>
+      <p>
+        In Goals on the Mac, open Settings, then AI agents. Turn on Allow AI agents, and Allow
+        changes as well if you want the agent to write. The same page has step by step setup
+        for Claude Desktop, Claude Code, Cursor, VS Code and others, with the text to copy.
+        Locking in, unlocking, resetting and deleting always ask you first in Goals.
       </p>
 
       <h2>Why only five goals?</h2>
@@ -95,8 +110,8 @@ export function Support() {
 
       <h2>What does it need?</h2>
       <p>
-        An iPhone running iOS 26 or later. The watch app needs watchOS 26 or later on a paired
-        Apple Watch.
+        An iPhone or iPad running iOS 26 or iPadOS 26 or later, or a Mac running macOS 26 or
+        later. The watch app needs watchOS 26 or later on a paired Apple Watch.
       </p>
     </Document>
   )

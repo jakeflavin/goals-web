@@ -9,32 +9,33 @@ import styled, { useTheme } from 'styled-components'
  * loose on the page, and in light mode the whole screen dissolves. The frame is
  * what says where the phone stops.
  *
- * It is drawn rather than photographed: a bezel, a bright edge to catch the
- * light, and the two button nubs that make the silhouette read as a phone at a
- * glance. No drop shadow, no reflection gradient, no hand holding it. The
- * screenshots already carry their own status bar and Dynamic Island, so none of
- * that is faked here either.
+ * It is drawn the way the phone is built: black glass around the screen in both
+ * schemes, because the glass is black whatever the page is, and one band of
+ * metal around the glass. The band is the only line that changes with the
+ * scheme, and it is what makes the silhouette read as hardware on a black page
+ * and on a white one. It used to be a grey bezel that turned light with the
+ * page, which read as a placeholder rather than as a phone.
+ *
+ * No drop shadow, no reflection gradient, no hand holding it. The screenshots
+ * already carry their own status bar and Dynamic Island, so none of that is
+ * faked here either.
  */
 
-const Bezel = styled.div<{ $width: string }>`
+const Body = styled.div<{ $width: string }>`
   width: 100%;
   max-width: ${({ $width }) => $width};
   margin-inline: auto;
   position: relative;
-  padding: 2.6%;
-  border-radius: 13%/6.2%;
-  background: ${({ theme }) => theme.color.bezel};
-  /* The bright edge. A frame with no edge reads as a grey rectangle rather than
-     as hardware, and this is one hairline rather than a bevel of gradients. */
-  box-shadow:
-    inset 0 0 0 1px ${({ theme }) => theme.color.bezelEdge},
-    0 0 0 1px ${({ theme }) => theme.color.border};
+  padding: 3.2%;
+  border-radius: 14%/6.6%;
+  background: ${({ theme }) => theme.color.glass};
+  box-shadow: 0 0 0 1.5px ${({ theme }) => theme.color.rim};
 
   img {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 10.6%/5.1%;
+    border-radius: 11%/5.1%;
   }
 `
 
@@ -48,24 +49,23 @@ const Buttons = styled.span`
   &::after {
     content: '';
     position: absolute;
-    width: 2px;
-    background: ${({ theme }) => theme.color.bezel};
-    filter: brightness(0.86);
+    width: 3px;
+    background: ${({ theme }) => theme.color.rim};
     border-radius: 2px;
   }
 
   /* Volume up and down, on the left. */
   &::before {
-    left: -2px;
+    left: -4px;
     top: 20%;
-    height: 15%;
+    height: 14%;
   }
 
   /* The side button, on the right, and lower. */
   &::after {
-    right: -2px;
+    right: -4px;
     top: 26%;
-    height: 12%;
+    height: 11%;
   }
 `
 
@@ -91,7 +91,7 @@ export function PhoneFrame({
 }) {
   const { mode } = useTheme()
   return (
-    <Bezel $width={width}>
+    <Body $width={width}>
       <Buttons aria-hidden="true" />
       <img
         src={`/goals/images/${shot}-${mode}.png`}
@@ -101,6 +101,6 @@ export function PhoneFrame({
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
       />
-    </Bezel>
+    </Body>
   )
 }

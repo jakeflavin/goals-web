@@ -55,6 +55,19 @@ describe('the landing page', () => {
     }
   })
 
+  it('names every platform it runs on, above the fold', () => {
+    renderPage(<Landing />)
+    expect(screen.getByText(/For iPhone, iPad, Mac and Apple Watch\./)).toBeInTheDocument()
+  })
+
+  it('shows the iPad and the Mac rather than only saying so', () => {
+    const { container } = renderPage(<Landing />)
+    const sources = [...container.querySelectorAll('img')].map((img) => img.getAttribute('src'))
+    for (const shot of ['ipad', 'mac', 'menubar']) {
+      expect(sources.some((src) => src?.includes(`/${shot}-`))).toBe(true)
+    }
+  })
+
   it('sends the reader to the policy rather than summarising it', () => {
     renderPage(<Landing />)
     expect(screen.getByRole('link', { name: /Read the privacy policy/i })).toHaveAttribute(
@@ -71,7 +84,9 @@ describe('the screenshots', () => {
   it.each(['light', 'dark'] as const)('are the %s capture in %s mode', (mode) => {
     const { container } = renderPage(<Landing />, mode)
     const phones = [...container.querySelectorAll('img')].filter((img) =>
-      /home|detail|habits|tasks|habitdetail|widgets/.test(img.getAttribute('src') ?? ''),
+      /home|detail|habits|tasks|habitdetail|widgets|ipad|mac|menubar/.test(
+        img.getAttribute('src') ?? '',
+      ),
     )
 
     expect(phones.length).toBeGreaterThan(0)

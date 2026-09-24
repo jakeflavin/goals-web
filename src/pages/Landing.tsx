@@ -1,10 +1,11 @@
-import styled, { useTheme } from 'styled-components'
+import styled, { type DefaultTheme, useTheme } from 'styled-components'
 import { Cta } from '../components/Cta'
+import { GoalStack } from '../components/GoalStack'
 import { PhoneFrame } from '../components/PhoneFrame'
+import { TabletFrame } from '../components/TabletFrame'
 import { WatchFrame } from '../components/WatchFrame'
-import { SlotBars } from '../components/SlotBars'
+import { MenuBarFrame, WindowFrame } from '../components/WindowFrame'
 import {
-  Band,
   Column,
   Eyebrow,
   Grid,
@@ -18,7 +19,7 @@ import {
   Section,
   Split,
 } from '../components/primitives'
-import { PLANS, SMALL_FEATURES } from '../lib/site'
+import { PLANS, REQUIREMENTS, SMALL_FEATURES } from '../lib/site'
 
 /**
  * The landing page.
@@ -26,35 +27,50 @@ import { PLANS, SMALL_FEATURES } from '../lib/site'
  * It is built to be read top to bottom by somebody who has never heard of the
  * app and has to end up understanding it well enough to decide. So the order is
  * an argument rather than a feature list: what it is, why the limit is the
- * point, how a goal is made, the three things a goal is made of, where it shows
- * up when the phone is in a pocket, what it costs, and who wrote it.
+ * point, where it lives now that it is on every screen, how a goal is made, the
+ * three things a goal is made of, what it costs, and who wrote it.
  *
  * The pitch is the approved App Store description in the same voice, because
  * they describe the same product to the same person and two different pitches
  * would mean one of them is wrong.
  *
- * Every picture is a screenshot of the app running with its `-seed` launch
- * argument, captured twice so the phone on the page is in the same scheme as
- * the page around it. No mockups, no renders, no invented data.
+ * Every picture is the app running with its `-seed` launch argument, captured
+ * twice so the device on the page is in the same scheme as the page around it.
+ * The phones and the watch come from simulators, the iPad from an iPad
+ * simulator, and the Mac window and menu bar panel from the Mac app capturing
+ * itself (`-snapshot-to`). The hero's five blocks are drawn rather than
+ * captured, from the same seeded values. No mockups, no renders, no invented
+ * data.
+ *
+ * Where the page spends its boldness: once, on the hero, which is the home
+ * screen at the size of the browser. Everything after it is quiet on purpose.
  */
 
 // ---------------------------------------------------------------- hero
 
+/**
+ * Type on the left, the five blocks on the right, and the blocks as tall as
+ * the window allows. The home screen's claim is that five blocks fill the
+ * screen exactly; the hero makes the same claim about the browser.
+ */
 const Hero = styled(Section)`
   display: grid;
-  grid-template-columns: 1.08fr 0.92fr;
+  grid-template-columns: 1.05fr 0.95fr;
   gap: ${({ theme }) => theme.space.s16};
   align-items: center;
-  padding-top: ${({ theme }) => theme.space.s16};
+  padding-top: ${({ theme }) => theme.space.s12};
+  padding-bottom: ${({ theme }) => theme.space.s12};
 
   @media (max-width: ${({ theme }) => theme.bp.lg}) {
     grid-template-columns: 1fr;
     gap: ${({ theme }) => theme.space.s12};
+    padding-top: ${({ theme }) => theme.space.s16};
   }
 `
 
-const HeroBars = styled(SlotBars)`
-  margin: ${({ theme }) => theme.space.s6} 0;
+const Lead = styled(Prose)`
+  margin-top: ${({ theme }) => theme.space.s8};
+  max-width: 34ch;
 `
 
 const Actions = styled.div`
@@ -62,7 +78,7 @@ const Actions = styled.div`
   flex-wrap: wrap;
   align-items: center;
   gap: ${({ theme }) => theme.space.s5};
-  margin-top: ${({ theme }) => theme.space.s8};
+  margin-top: ${({ theme }) => theme.space.s10};
 `
 
 const Fineprint = styled.p`
@@ -82,22 +98,154 @@ const Fineprint = styled.p`
  */
 const Statement = styled.p`
   margin: 0;
-  max-width: 22ch;
-  font-size: clamp(2rem, 4.4vw, 3.25rem);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  text-wrap: balance;
+  font-size: clamp(2.5rem, 5.6vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
   font-weight: 700;
 
+  /* The two sentences break between each other and never inside one. */
   span {
+    white-space: nowrap;
+  }
+
+  span + span {
     color: ${({ theme }) => theme.color.textSecondary};
   }
 `
 
 const StatementLayout = styled(Section)`
   display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: ${({ theme }) => theme.space.s16};
+  align-items: end;
+
+  @media (max-width: ${({ theme }) => theme.bp.lg}) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.space.s12};
+  }
+`
+
+// ---------------------------------------------------------------- every screen
+
+/** The ground the family of devices stands on. The one band on the page. */
+const StageBand = styled.div`
+  background: ${({ theme }) => theme.color.stage};
+  border-block: 1px solid ${({ theme }) => theme.color.border};
+`
+
+/**
+ * The Mac window at the back, the iPad in front of it on the right and the
+ * phone in front of it on the left, the way the three sit on a desk.
+ *
+ * Every position is a percentage of the stage's width, so the arrangement
+ * holds its shape at any size rather than being rebuilt at each breakpoint.
+ * The two devices in front carry a ring in the stage colour outside their
+ * metal band, which is what separates them from the window behind without a
+ * shadow (DESIGN.md §14).
+ *
+ * Under `md` the overlap stops working: the phone in front of the window
+ * covers most of what the window says. There the window goes on top, full
+ * width, and the iPad and the phone stand side by side beneath it.
+ */
+const Stage = styled.div`
+  position: relative;
+  aspect-ratio: 100 / 62;
+  margin-top: ${({ theme }) => theme.space.s16};
+
+  > * {
+    position: absolute;
+  }
+
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    align-items: end;
+    gap: ${({ theme }) => theme.space.s4};
+    margin-top: ${({ theme }) => theme.space.s12};
+
+    > * {
+      position: static;
+    }
+  }
+`
+
+const OnStageMac = styled.div`
+  top: 0;
+  left: 0;
+  width: 82%;
+
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
+    grid-column: 1 / -1;
+    width: auto;
+  }
+`
+
+const ring = ({ theme }: { theme: DefaultTheme }) =>
+  `0 0 0 1.5px ${theme.color.rim}, 0 0 0 9px ${theme.color.stage}`
+
+const OnStageTablet = styled.div`
+  right: 0;
+  bottom: 0;
+  width: 26%;
+
+  > div {
+    box-shadow: ${ring};
+  }
+
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
+    width: auto;
+  }
+`
+
+const OnStagePhone = styled.div`
+  left: 6%;
+  bottom: 0;
+  width: 13.5%;
+
+  > div {
+    box-shadow: ${ring};
+  }
+
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
+    width: auto;
+  }
+`
+
+/** One short paragraph per platform, under the stage, in its left-to-right order. */
+const Platforms = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: ${({ theme }) => theme.space.s8};
+  margin-top: ${({ theme }) => theme.space.s16};
+  padding-top: ${({ theme }) => theme.space.s6};
+  border-top: 1px solid ${({ theme }) => theme.color.border};
+
+  p {
+    margin: 0;
+    color: ${({ theme }) => theme.color.textSecondary};
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: ${({ theme }) => theme.bp.md}) {
+    grid-template-columns: 1fr;
+    gap: ${({ theme }) => theme.space.s6};
+  }
+`
+
+// ---------------------------------------------------------------- agents
+
+/**
+ * The agents section is prose and a list, with no picture. The only thing to
+ * show would be a chat transcript, and a transcript on a landing page is a
+ * promise about somebody else's product.
+ */
+const Agents = styled.div`
+  display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${({ theme }) => theme.space.s16};
-  align-items: center;
+  align-items: start;
 
   @media (max-width: ${({ theme }) => theme.bp.lg}) {
     grid-template-columns: 1fr;
@@ -323,10 +471,8 @@ const Tier = styled.div<{ $featured: boolean }>`
 
   h3 {
     margin: 0;
-    font-size: 0.8125rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: 1.0625rem;
+    font-weight: 600;
     color: ${({ theme }) => theme.color.textSecondary};
   }
 
@@ -438,6 +584,7 @@ const Closing = styled(Section)`
   }
 `
 
+
 // ---------------------------------------------------------------- the page
 
 export function Landing() {
@@ -446,51 +593,182 @@ export function Landing() {
       <Column>
         <Hero>
           <div>
-            <H1>Five goals. One year.</H1>
-            <HeroBars />
-            <Prose $lead>
-              Goals is a goal tracker for iPhone and Apple Watch with five slots for the year.
-              The limit is the point. Most goal apps let you pile up wishes until the list stops
-              meaning anything. Goals makes you pick.
-            </Prose>
+            <H1>
+              <span>Five goals.</span> <span>One year.</span>
+            </H1>
+            <Lead $lead>
+              Goals is a goal tracker with five slots for the year. The limit is the point. Most
+              goal apps let you pile up wishes until the list stops meaning anything. Goals makes
+              you pick.
+            </Lead>
             <Actions>
               <Cta />
             </Actions>
             <Fineprint>
-              iPhone and Apple Watch, iOS 26 or later. One goal free, with no time limit.
+              For iPhone, iPad, Mac and Apple Watch. One goal free, with no time limit.
             </Fineprint>
           </div>
-          <figure style={{ margin: 0 }}>
-            <PhoneFrame
-              shot="home"
-              width="290px"
-              priority
-              alt="The Goals home screen: five full width colour blocks, one for each goal, each showing its title and how far along it is."
-            />
-          </figure>
+          <GoalStack />
         </Hero>
       </Column>
 
-      <Band>
+      <Rule />
+
+      <Column>
+        <StatementLayout>
+          <Statement>
+            <span>You get five.</span> <span>Not six.</span>
+          </Statement>
+          <div>
+            <Prose>
+              Choosing what goes in a slot is the work this app exists to make you do. The home
+              screen is five full width blocks that fill the screen exactly, so there is visibly
+              no room for another one.
+            </Prose>
+            <Prose>
+              Everything else in the app follows from that. A goal is worth a milestone track and
+              a habit schedule because there are only ever five of them.
+            </Prose>
+          </div>
+        </StatementLayout>
+      </Column>
+
+      <StageBand>
         <Column>
-          <StatementLayout>
-            <Statement>
-              You get five. <span>Not six.</span>
-            </Statement>
+          <Section>
+            <H2>The same five, on every screen you own.</H2>
+            <Prose $lead>
+              Goals is now on iPad and Mac as well as iPhone and Apple Watch. Your goals keep in
+              step through your own private iCloud, so a habit ticked off on the phone is ticked
+              off on the Mac.
+            </Prose>
+            <Stage>
+              <OnStageMac>
+                <WindowFrame alt="Goals on the Mac: the five goal blocks down the left of the window, and Run a marathon open on the right with its milestones, tasks and habit." />
+              </OnStageMac>
+              <OnStageTablet>
+                <TabletFrame alt="Goals on the iPad: the five goal blocks down the left, and Run a marathon open beside them." />
+              </OnStageTablet>
+              <OnStagePhone>
+                <PhoneFrame
+                  width="100%"
+                  shot="home"
+                  alt="Goals on the iPhone: the home screen, five full width colour blocks, one for each goal."
+                />
+              </OnStagePhone>
+            </Stage>
+            <Platforms>
+              <div>
+                <H3>iPhone and Apple Watch</H3>
+                <p>
+                  Where the year gets lived. The five blocks in your pocket, and the habits due
+                  today on your wrist.
+                </p>
+              </div>
+              <div>
+                <H3>iPad</H3>
+                <p>
+                  The five goals down the left and the open one on the right, both at once. Narrow
+                  the window and it becomes the phone.
+                </p>
+              </div>
+              <div>
+                <H3>Mac</H3>
+                <p>
+                  The same two columns in one window, the whole app again in the menu bar, and
+                  widgets on the desktop.
+                </p>
+              </div>
+            </Platforms>
+          </Section>
+        </Column>
+      </StageBand>
+
+      <Column>
+        <Section>
+          <Split>
             <div>
+              <Eyebrow>On the Mac</Eyebrow>
+              <H2>The whole app, one click from the menu bar.</H2>
               <Prose>
-                Choosing what goes in a slot is the work this app exists to make you do. The home
-                screen is five full width blocks that fill the screen exactly, so there is
-                visibly no room for another one.
+                Click the Goals icon in the menu bar and the app drops down at the size of a
+                phone: the five goals, the tasks, and the habits still due today. Making a goal,
+                locking one in and a habit&rsquo;s history all open inside it, so most days
+                there is no reason to open the window at all.
               </Prose>
+              <Items>
+                <div>
+                  <H3>The window</H3>
+                  <dd>
+                    The five goals on the left and the open one on the right. &#8984;1 to
+                    &#8984;5 move between them, &#8984;T and &#8984;H open tasks and habits.
+                  </dd>
+                </div>
+                <div>
+                  <H3>The Dock</H3>
+                  <dd>
+                    The icon is badged with the habits still due today. Or turn the Dock icon off,
+                    and Goals lives in the menu bar and nowhere else.
+                  </dd>
+                </div>
+                <div>
+                  <H3>The desktop</H3>
+                  <dd>
+                    The phone&rsquo;s widgets, on the desktop: one goal, all five, or
+                    today&rsquo;s habits, ticked off where they sit.
+                  </dd>
+                </div>
+              </Items>
+            </div>
+            <figure>
+              <MenuBarFrame alt="The Goals menu bar panel, open under its icon: tabs for Goals, Tasks and Habits, and the five goal blocks with their progress." />
+            </figure>
+          </Split>
+        </Section>
+      </Column>
+
+      <Rule />
+
+      <Column>
+        <Section>
+          <Agents>
+            <div>
+              <Eyebrow>AI agents, on the Mac</Eyebrow>
+              <H2>An agent can help. It cannot decide.</H2>
               <Prose>
-                Everything else in the app follows from that. A goal is worth a milestone track
-                and a habit schedule because there are only ever five of them.
+                The Mac app can act as an MCP server, so an AI agent like Claude, Cursor or VS
+                Code can read your goals, draft a plan into one, add tasks and log a habit. It is
+                off until you switch it on, and reading and changing are two separate switches.
               </Prose>
             </div>
-          </StatementLayout>
-        </Column>
-      </Band>
+            <Items>
+              <div>
+                <H3>Four things always wait for you</H3>
+                <dd>
+                  Locking in, unlocking, resetting and deleting ask first, in the app. A request
+                  nobody answers within a minute is a no.
+                </dd>
+              </div>
+              <div>
+                <H3>Local by design</H3>
+                <dd>
+                  The agent reaches Goals through a small helper inside the app, on the same Mac.
+                  Goals has no web address, and nothing in it listens on the network.
+                </dd>
+              </div>
+              <div>
+                <H3>A record of what happened</H3>
+                <dd>
+                  Settings keeps a log of what each agent read and changed, and an agent&rsquo;s
+                  change lands everywhere a tap would: the window, the widgets and the badge.
+                </dd>
+              </div>
+            </Items>
+          </Agents>
+        </Section>
+      </Column>
+
+      <Rule />
 
       <Column>
         <Section>
@@ -640,44 +918,44 @@ export function Landing() {
         </Section>
       </Column>
 
-      <Band>
-        <Column>
-          <Section>
-            <Eyebrow>Off the phone</Eyebrow>
-            <H2>On your wrist and on your home screen.</H2>
-            <Prose>
-              Most of using this app is checking one thing off. That should not need the app.
-            </Prose>
-            <Surfaces>
-              <SurfaceCard>
-                <div>
-                  <h3>Apple Watch</h3>
-                  <p>
-                    Your goals and the habits due today, tickable from the wrist. Complications
-                    put one on the watch face.
-                  </p>
-                </div>
-                <WatchFrame alt="The Goals watch app, showing three goal blocks with their progress." />
-              </SurfaceCard>
-              <SurfaceCard>
-                <div>
-                  <h3>Widgets</h3>
-                  <p>
-                    Home screen and Lock Screen, in every size: one goal and its progress, what
-                    is left to do, or the habits still due today. Check things off without
-                    opening anything.
-                  </p>
-                </div>
-                <WidgetShot />
-              </SurfaceCard>
-            </Surfaces>
-          </Section>
-        </Column>
-      </Band>
+      <Rule />
 
       <Column>
         <Section>
-          <Eyebrow>And the rest</Eyebrow>
+          <H2>Most days, you never open it.</H2>
+          <Prose>
+            Most of using this app is checking one thing off. That should not need the app.
+          </Prose>
+          <Surfaces>
+            <SurfaceCard>
+              <div>
+                <h3>Apple Watch</h3>
+                <p>
+                  Your goals and the habits due today, tickable from the wrist. Complications put
+                  one on the watch face.
+                </p>
+              </div>
+              <WatchFrame alt="The Goals watch app, showing three goal blocks with their progress." />
+            </SurfaceCard>
+            <SurfaceCard>
+              <div>
+                <h3>Widgets</h3>
+                <p>
+                  On the Home Screen and the Lock Screen of an iPhone or iPad, and on the desktop
+                  of a Mac: one goal and its progress, what is left to do, or the habits still
+                  due today. Check things off without opening anything.
+                </p>
+              </div>
+              <WidgetShot />
+            </SurfaceCard>
+          </Surfaces>
+        </Section>
+      </Column>
+
+      <Rule />
+
+      <Column>
+        <Section>
           <H2>Everything else it does.</H2>
           <Grid>
             {SMALL_FEATURES.map((feature) => (
@@ -695,11 +973,11 @@ export function Landing() {
       <Column>
         <Section>
           <Eyebrow>Privacy</Eyebrow>
-          <H2>Nothing leaves the device.</H2>
+          <H2>No account. No analytics. No server.</H2>
           <Prose $lead>
-            There is no account and no sign up. Nothing is collected, nothing is tracked, and
-            nothing is sent anywhere. Your goals are stored on your phone, and the only way
-            anything gets out is if you export it yourself.
+            There is no sign up, and nothing is collected or tracked. Your goals sync through
+            your own private iCloud, which Apple keeps under your Apple Account and which I have
+            no way to see. Switch sync off in Settings and nothing leaves the device at all.
           </Prose>
           <Prose>
             The App Store privacy label for Goals says Data Not Collected, and that is the whole
@@ -708,15 +986,15 @@ export function Landing() {
         </Section>
       </Column>
 
-      <Band>
+      <StageBand>
         <Column>
           <Section>
             <Eyebrow>Price</Eyebrow>
             <H2>One goal is free. Five is the subscription.</H2>
             <Prose>
               The subscription gates exactly one thing: how many goals you can have locked in at
-              once. The watch app, the widgets, the templates, the history and the export are
-              free, and they stay free.
+              once. It is one purchase for iPhone, iPad and Mac. The watch app, the widgets, the
+              templates, the history and the export are free, and they stay free.
             </Prose>
             <Tiers>
               {PLANS.map((plan) => (
@@ -741,11 +1019,10 @@ export function Landing() {
             </Tiers>
           </Section>
         </Column>
-      </Band>
+      </StageBand>
 
       <Column>
         <Section>
-          <Eyebrow>Who made it</Eyebrow>
           <Signature>
             <img
               src="/goals/images/jake.jpg"
@@ -755,6 +1032,7 @@ export function Landing() {
               loading="lazy"
             />
             <div>
+              <H3>Who made it</H3>
               <Prose>
                 Hi, I&rsquo;m Jake. I&rsquo;m an indie developer. I make apps for the fun of it
                 and put them out into the world, and I keep them free or cheap wherever I can. If
@@ -780,6 +1058,7 @@ export function Landing() {
           <Actions style={{ justifyContent: 'center' }}>
             <Cta />
           </Actions>
+          <Fineprint>{REQUIREMENTS}</Fineprint>
         </Closing>
       </Column>
     </>

@@ -2,22 +2,21 @@ import styled from 'styled-components'
 
 /**
  * The Apple Watch, drawn around its screenshot, on the same principle as
- * `PhoneFrame`: the watch canvas is black and so is this page in dark mode, so
- * without a case the screen has no edge.
+ * `PhoneFrame`: black glass and one band of metal, because the watch canvas is
+ * black and so is this page in dark mode, and without a case the screen has no
+ * edge.
  *
  * The watch has no light mode, so unlike the phone there is one capture rather
  * than two.
  */
 const Case = styled.div`
   width: 100%;
-  max-width: 236px;
+  max-width: 220px;
   margin-inline: auto;
-  padding: 5.5%;
-  border-radius: 28%/24%;
-  background: ${({ theme }) => theme.color.bezel};
-  box-shadow:
-    inset 0 0 0 1px ${({ theme }) => theme.color.bezelEdge},
-    0 0 0 1px ${({ theme }) => theme.color.border};
+  padding: 6%;
+  border-radius: 30%/25%;
+  background: ${({ theme }) => theme.color.glass};
+  box-shadow: 0 0 0 1.5px ${({ theme }) => theme.color.rim};
 
   img {
     width: 100%;

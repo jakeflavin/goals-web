@@ -7,7 +7,9 @@ import { CONTACT_EMAIL, POLICY_UPDATED } from '../lib/site'
  * Every claim on this page is one the app can be held to. It collects nothing,
  * so the policy says it collects nothing, and then spends the rest of its length
  * naming the places somebody would reasonably expect data to go and saying what
- * actually happens there instead. A policy that only said "we respect your
+ * actually happens there instead. iCloud sync is the one place data does go,
+ * so it gets the most words: whose storage it is, what goes there, and how to
+ * turn it off. A policy that only said "we respect your
  * privacy" would be shorter and worth nothing.
  */
 export function Privacy() {
@@ -19,29 +21,47 @@ export function Privacy() {
     >
       <h2>The short version</h2>
       <p>
-        Goals is a goal tracker that runs entirely on your device. It has no server, no
-        backend and no account system. Nothing you write in it is sent to me or to anybody
-        else. The App Store privacy label for Goals says <strong>Data Not Collected</strong>,
-        and that is accurate: there is no category of data the app gathers, because there is
-        nowhere for it to go.
+        Goals is a goal tracker for iPhone, iPad, Mac and Apple Watch. It has no server, no
+        backend and no account system of its own. Nothing you write in it is sent to me or to
+        anybody else. It can keep your devices in step through your own iCloud, which is
+        storage Apple provides to you under your Apple Account, not to me. The App Store
+        privacy label for Goals says <strong>Data Not Collected</strong>, and that is accurate:
+        there is no category of data the app gathers, because there is nowhere of mine for it
+        to go.
       </p>
 
       <h2>What the app stores, and where</h2>
       <p>
-        Your goals, milestones, tasks, habits, habit history and settings are stored on your
+        Your goals, milestones, tasks, habits, habit history and settings are stored on each
         device, in the app&rsquo;s own storage. Some of it sits in a shared container so that
         the widgets and the Apple Watch app can read it. That container is on the same device
         and is not readable by other apps.
       </p>
+
+      <h2>iCloud sync</h2>
       <p>
-        There is no sync between devices. Goals on your iPhone and Goals on somebody
-        else&rsquo;s iPhone have no way of knowing about each other.
+        Goals keeps your iPhone, iPad and Mac in step through the private iCloud database that
+        belongs to your Apple Account. What goes there is your goals, milestones, tasks, habits
+        and habit history. It is stored by Apple, encrypted in transit and at rest, and only
+        devices signed in to your Apple Account can read it. I cannot see it, and nobody else
+        can either. Apple&rsquo;s handling of iCloud is covered by{' '}
+        <a href="https://www.apple.com/legal/privacy/" rel="noreferrer">
+          Apple&rsquo;s privacy policy
+        </a>
+        .
+      </p>
+      <p>
+        Sync is on by default, and Settings has a switch to turn it off. With it off, nothing
+        leaves the device at all. Some things never sync either way: your subscription status,
+        your reminder settings, and a Mac&rsquo;s menu bar and Dock settings stay on the device
+        they were set on. The Apple Watch app does not use iCloud; it reads from the iPhone it
+        is paired with.
       </p>
 
       <h2>Backups</h2>
       <p>
-        If you back up your iPhone, the app&rsquo;s data goes into that backup along with
-        everything else on the phone. That backup belongs to you and is held under your Apple
+        If you back up your iPhone, iPad or Mac, the app&rsquo;s data goes into that backup
+        along with everything else on the device. That backup belongs to you and is held under your Apple
         Account, governed by Apple&rsquo;s terms and privacy policy. I have no access to it
         and no way to ask for it.
       </p>
@@ -63,8 +83,9 @@ export function Privacy() {
         .
       </p>
       <p>
-        You can manage or cancel a subscription in the Settings app on your iPhone, under your
-        name, in Subscriptions. Cancelling never deletes anything you have written.
+        You can manage or cancel a subscription in the Settings app on your iPhone or iPad,
+        under your name, in Subscriptions, or in the App Store on a Mac. Cancelling never
+        deletes anything you have written.
       </p>
 
       <h2>Notifications, Siri and Spotlight</h2>
@@ -79,31 +100,49 @@ export function Privacy() {
         Apple&rsquo;s privacy policy, not by this one.
       </p>
 
+      <h2>AI agents on the Mac</h2>
+      <p>
+        The Mac app can let an AI app on the same Mac, such as Claude, Cursor or VS Code, read
+        and change your goals. It is off until you turn it on in Settings, and reading and
+        changing are separate switches. The AI app reaches Goals through a helper inside Goals
+        on the same Mac; Goals has no web address and accepts no connections from the network.
+        Locking in, unlocking, resetting and deleting always wait for you to approve them in
+        Goals.
+      </p>
+      <p>
+        What the AI app does with what it reads is up to that app and the company that makes
+        it, and is covered by its privacy policy, not by this one. If you would rather none of
+        your goals reach an AI service, leave the switch off.
+      </p>
+
       <h2>Export and import</h2>
       <p>
         You can export everything as a Markdown file, and import goals from a JSON file. Both
-        are things you start yourself. An export goes wherever you send it with the iOS share
-        sheet, and once it leaves the app it is out of the app&rsquo;s hands. Nothing is
+        are things you start yourself. An export goes wherever you send it, and once it leaves
+        the app it is out of the app&rsquo;s hands. Nothing is
         exported automatically.
       </p>
 
       <h2>Deleting your data</h2>
       <p>
         Settings has a Delete all goals action that removes everything the app has stored.
-        Deleting the app from your phone removes it too. Because none of it was ever anywhere
-        else, that is the whole deletion: there is no copy of it to request and nothing for me
-        to erase on your behalf.
+        With sync on, that deletion reaches your iCloud and every device signed in to it.
+        Deleting the app from one device removes that device&rsquo;s copy but leaves the one in
+        your iCloud, which is what lets a reinstall find your goals again. None of it was ever
+        anywhere of mine, so there is no copy to request from me and nothing for me to erase
+        on your behalf.
       </p>
 
       <h2>Third parties</h2>
       <p>
         Goals uses no analytics, no crash reporting service, no advertising network and no
-        third party SDKs of any kind. It makes no network requests of its own. The only
-        company involved in the app at all is Apple, as the store that sells it and the
-        platform it runs on.
+        third party SDKs of any kind. The only connections it makes are to Apple: iCloud for
+        sync, and the App Store for purchases. The only company involved in the app at all is
+        Apple, as the store that sells it, the platform it runs on, and the iCloud that keeps
+        your devices in step.
       </p>
       <p>
-        If you have turned on Share With App Developers in your iPhone&rsquo;s Privacy and
+        If you have turned on Share With App Developers in your device&rsquo;s Privacy and
         Security settings, Apple may pass me aggregated crash and usage reports. Those come
         from Apple, are not tied to a person, and are not something the app produces or can
         see.
