@@ -24,7 +24,7 @@ export const APP_STORE_URL = `https://apps.apple.com/app/id${APP_STORE_ID}`
 export const CONTACT_EMAIL = 'jakeflavin@gmail.com'
 
 /** Last time the privacy policy changed. Shown on that page, and nowhere else. */
-export const POLICY_UPDATED = '24 September 2026'
+export const POLICY_UPDATED = '30 September 2026'
 
 export type Plan = {
   name: string

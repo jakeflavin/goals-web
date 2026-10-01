@@ -103,16 +103,17 @@ export function Privacy() {
       <h2>AI agents on the Mac</h2>
       <p>
         The Mac app can let an AI app on the same Mac, such as Claude, Cursor or VS Code, read
-        and change your goals. It is off until you turn it on in Settings, and reading and
-        changing are separate switches. The AI app reaches Goals through a helper inside Goals
+        and change your goals. It is off by default and stays off until you turn it on in
+        Settings, and reading and changing are separate switches. The AI app reaches Goals through a helper inside Goals
         on the same Mac; Goals has no web address and accepts no connections from the network.
         Locking in, unlocking, resetting and deleting always wait for you to approve them in
         Goals.
       </p>
       <p>
-        What the AI app does with what it reads is up to that app and the company that makes
-        it, and is covered by its privacy policy, not by this one. If you would rather none of
-        your goals reach an AI service, leave the switch off.
+        Most AI apps send what they read to their own servers to be processed, so once you
+        connect one, your goals may reach the company that makes it. What that company does
+        with them is covered by its privacy policy, not by this one. If you would rather none
+        of your goals reach an AI service, leave the switch off.
       </p>
 
       <h2>Export and import</h2>
@@ -121,6 +122,11 @@ export function Privacy() {
         are things you start yourself. An export goes wherever you send it, and once it leaves
         the app it is out of the app&rsquo;s hands. Nothing is
         exported automatically.
+      </p>
+      <p>
+        The Copy AI planning prompt button in Settings puts a prompt on your clipboard that
+        includes the titles of your current goals. Goals sends nothing itself, but whatever you
+        paste into an AI chat is shared with that service.
       </p>
 
       <h2>Deleting your data</h2>
@@ -136,10 +142,15 @@ export function Privacy() {
       <h2>Third parties</h2>
       <p>
         Goals uses no analytics, no crash reporting service, no advertising network and no
-        third party SDKs of any kind. The only connections it makes are to Apple: iCloud for
-        sync, and the App Store for purchases. The only company involved in the app at all is
-        Apple, as the store that sells it, the platform it runs on, and the iCloud that keeps
-        your devices in step.
+        tracking or advertising SDKs. The Mac app includes the open source Model Context
+        Protocol Swift SDK and the three small libraries it is built on, all listed in the
+        app&rsquo;s Acknowledgements, which let an AI app on the same Mac talk to Goals. They
+        run only on your Mac, and Goals uses them only over a local connection that never
+        leaves it. The only network
+        connections Goals makes are to Apple: iCloud for sync, and the App Store for purchases.
+        Apart from any AI app you choose to connect on a Mac, the only company involved in the
+        app at all is Apple, as the store that sells it, the platform it runs on, and the iCloud
+        that keeps your devices in step.
       </p>
       <p>
         If you have turned on Share With App Developers in your device&rsquo;s Privacy and

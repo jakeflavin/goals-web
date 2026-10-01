@@ -37,8 +37,8 @@ export function Support() {
 
       <h2>I already paid and the app does not know</h2>
       <p>
-        Open the subscription screen, tap the button at the top right, and choose Restore
-        purchases. Make sure you are signed in to the same Apple Account you bought it with. If
+        Open the subscription screen and tap Restore under the purchase button, in the row
+        with Terms and Privacy. Make sure you are signed in to the same Apple Account you bought it with. If
         it still does not come back, email me.
       </p>
 

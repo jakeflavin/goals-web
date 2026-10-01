@@ -121,7 +121,10 @@ describe('the privacy policy', () => {
 describe('the support page', () => {
   it('answers restoring a purchase, which is the question that costs money', () => {
     renderPage(<Support />)
-    expect(screen.getByText(/Restore\s+purchases/)).toBeInTheDocument()
+    // The app's Restore is a text button under the purchase button; the top
+    // right of the paywall is Close. Steps that point there close the paywall.
+    expect(screen.getByText(/tap Restore under the\s+purchase button/)).toBeInTheDocument()
+    expect(screen.queryByText(/top right/)).not.toBeInTheDocument()
   })
 
   it('gives a reachable address', () => {
