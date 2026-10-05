@@ -42,19 +42,20 @@ export function Privacy() {
       <p>
         Goals keeps your iPhone, iPad and Mac in step through the private iCloud database that
         belongs to your Apple Account. What goes there is your goals, milestones, tasks, habits
-        and habit history. It is stored by Apple, encrypted in transit and at rest, and only
-        devices signed in to your Apple Account can read it. I cannot see it, and nobody else
-        can either. Apple&rsquo;s handling of iCloud is covered by{' '}
+        and habit history. It is stored by Apple under your Apple Account, encrypted in transit
+        and on Apple&rsquo;s servers, and Goals has no server of its own that could read it. I
+        cannot see it. Apple&rsquo;s handling of iCloud is covered by{' '}
         <a href="https://www.apple.com/legal/privacy/" rel="noreferrer">
           Apple&rsquo;s privacy policy
         </a>
         .
       </p>
       <p>
-        Sync is on by default, and Settings has a switch to turn it off. With it off, nothing
-        leaves the device at all. Some things never sync either way: your subscription status,
-        your reminder settings, and a Mac&rsquo;s menu bar and Dock settings stay on the device
-        they were set on. The Apple Watch app does not use iCloud; it reads from the iPhone it
+        Sync is on by default, and Settings has a switch to turn it off, which takes effect the
+        next time the app opens. With it off, nothing goes to iCloud. Some things never sync
+        either way: your subscription status, your reminder and habit settings, the two
+        switches in Settings &rsaquo; Home, and a Mac&rsquo;s menu bar and Dock settings stay on
+        the device they were set on. The Apple Watch app does not use iCloud; it reads from the iPhone it
         is paired with.
       </p>
 
@@ -68,14 +69,15 @@ export function Privacy() {
 
       <h2>The subscription</h2>
       <p>
-        Goals offers a subscription and a one time purchase that unlock all five goal slots.
+        Goals offers Goals Plus, as a subscription or a one time purchase, which allows any
+        number of goals.
         Every part of buying one is handled by Apple through the App Store. I never see your
         name, your email address, your card, your billing address or your purchase history.
       </p>
       <p>
         What the app receives from Apple is an answer to one question: whether this device
-        currently has an active entitlement. It uses that answer to decide how many goals may
-        be locked in at once, and it stores that answer on the device. Apple&rsquo;s handling
+        currently has an active entitlement. It uses that answer to decide how many goals you
+        can have, and it stores that answer on the device. Apple&rsquo;s handling
         of the payment is covered by{' '}
         <a href="https://www.apple.com/legal/privacy/" rel="noreferrer">
           Apple&rsquo;s privacy policy
@@ -90,12 +92,12 @@ export function Privacy() {
 
       <h2>Notifications, Siri and Spotlight</h2>
       <p>
-        Reminders for habits are local notifications, scheduled by the app on your device. No
+        Reminders are local notifications, scheduled by the app on your device. No
         notification is sent through a server.
       </p>
       <p>
         Goals provides actions to Siri and Shortcuts, and indexes your goals and habits so
-        Spotlight can find them. Both of those are Apple system features running on your
+        Spotlight can find them. Archived goals are left out of the index. Both of those are Apple system features running on your
         device. Anything Siri does with your voice is between you and Apple and is covered by
         Apple&rsquo;s privacy policy, not by this one.
       </p>
@@ -107,7 +109,7 @@ export function Privacy() {
         Settings, and reading and changing are separate switches. The AI app reaches Goals through a helper inside Goals
         on the same Mac; Goals has no web address and accepts no connections from the network.
         Locking in, unlocking, resetting and deleting always wait for you to approve them in
-        Goals.
+        Goals. An AI app never sees an archived goal.
       </p>
       <p>
         Most AI apps send what they read to their own servers to be processed, so once you
@@ -118,7 +120,7 @@ export function Privacy() {
 
       <h2>Export and import</h2>
       <p>
-        You can export everything as a Markdown file, and import goals from a JSON file. Both
+        You can export your goals as a Markdown file, and import goals from a JSON file. Both
         are things you start yourself. An export goes wherever you send it, and once it leaves
         the app it is out of the app&rsquo;s hands. Nothing is
         exported automatically.

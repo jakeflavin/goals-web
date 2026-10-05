@@ -6,8 +6,8 @@ import { CONTACT_EMAIL } from '../lib/site'
  *
  * One person, one email address, and answers to the questions somebody actually
  * arrives with. The questions below are the ones the app's own behaviour raises:
- * what the subscription gates, what happens when it ends, and where the data
- * goes. A support page that only listed an address would send every one of them
+ * what the subscription changes, what happens when it ends, what archiving
+ * does, and where the data goes. A support page that only listed an address would send every one of them
  * to the inbox.
  */
 export function Support() {
@@ -27,12 +27,27 @@ export function Support() {
         ticket system to sign up for.
       </p>
 
-      <h2>How do I unlock all five goals?</h2>
+      <h2>How do I set more than one goal?</h2>
       <p>
-        The first goal slot is free with no time limit. Unlocking the other four is a
-        subscription, monthly or yearly, or a one time purchase. You can buy it from the
-        screen that appears when you try to lock in a second goal, or from the subscription
-        card in Settings.
+        One goal is free, with no time limit. More than one takes Goals Plus, which is a
+        monthly or yearly subscription or a one time Lifetime purchase. Its screen opens when
+        you set a goal past the free one, and the subscription card in Settings opens it too.
+        One purchase covers iPhone, iPad and Mac.
+      </p>
+
+      <h2>Is there a limit on how many goals I can have?</h2>
+      <p>
+        Only on the free plan, which holds one goal. Drafts and finished goals count toward it,
+        and archived goals never do, on either plan. Goals Plus has no limit.
+      </p>
+
+      <h2>How much is Goals Plus?</h2>
+      <p>
+        Monthly is $2.99 and Yearly is $19.99, which is 44% less than twelve months of Monthly.
+        Lifetime is $49.99, paid once. These are the US prices, and the App Store shows the
+        price for your own country. Goals Plus changes only how many goals you can have: the
+        watch app, widgets, templates, history, export, sync and archiving are the same on the
+        free plan.
       </p>
 
       <h2>I already paid and the app does not know</h2>
@@ -54,9 +69,37 @@ export function Support() {
       <p>
         Nothing is deleted, ever. The app is deliberately slow to act here: it waits for
         Apple&rsquo;s billing retry to finish, and it wants the same answer twice across
-        several days before it decides a subscription has really ended. Goals you had already
-        locked in are protected. If a slot is released it goes back to being a draft, the app
-        tells you it happened, and everything you wrote in it is still there.
+        several days before it decides a subscription has really ended. Then the goal locked
+        in longest stays locked in, and the others go back to being drafts with everything in
+        them kept. Their habits pause while they are drafts, so nothing is recorded as missed,
+        and the app tells you it happened. Setting a new goal opens the Goals Plus screen until
+        you are back within the free plan, and archived goals are left as they are.
+      </p>
+
+      <h2>What does Archive do?</h2>
+      <p>
+        Archive is in a goal&rsquo;s menu, and it asks first. The goal is kept whole, history
+        included, to look back on, and until it comes back it is left out of Home, Tasks,
+        Habits, the widgets, the watch, Siri, Spotlight, reminders and AI agents. It
+        doesn&rsquo;t count toward the free plan, and its habits pause, so nothing is recorded
+        as missed while it is archived. To bring it back, turn on Show archived goals in
+        Settings &rsaquo; Home, open the goal and choose Unarchive; it returns at the end of
+        Home.
+      </p>
+
+      <h2>Can I bring back an archived goal on the free plan?</h2>
+      <p>
+        Yes, when the plan has room for it. Bringing a goal back counts the same as setting a
+        new one, so if the free plan&rsquo;s one goal is already in use, the Goals Plus screen
+        opens instead.
+      </p>
+
+      <h2>Can I choose which goals Home shows?</h2>
+      <p>
+        Settings &rsaquo; Home has two switches, set on each device. Show completed goals is on
+        to begin with; turn it off and finished goals leave Home, but they still count and keep
+        their numbers, so the goals around them are not renumbered. Show archived goals is off
+        to begin with; turn it on and archived goals appear after the others, to look back on.
       </p>
 
       <h2>Does it sync between my devices?</h2>
@@ -73,9 +116,10 @@ export function Support() {
 
       <h2>Can I get my goals out?</h2>
       <p>
-        Settings has Export everything as Markdown, which produces a single readable file with
-        every goal, milestone, task and habit in it. There is also an import that takes a JSON
-        file, so a plan written somewhere else can be brought in whole.
+        Settings has Export as Markdown, which makes a readable copy of your goals for a notes
+        app, with archived goals after the rest. The history of each habit, day by day, stays
+        in the app. Import goals from JSON takes a file or the clipboard, and imported goals
+        arrive as drafts, as many as the plan has room for.
       </p>
 
       <h2>How do I delete everything?</h2>
@@ -90,15 +134,10 @@ export function Support() {
       <p>
         In Goals on the Mac, open Settings, then AI agents. Turn on Allow AI agents, and Allow
         changes as well if you want the agent to write. The same page has step by step setup
-        for Claude Desktop, Claude Code, Cursor, VS Code and others, with the text to copy.
-        Locking in, unlocking, resetting and deleting always ask you first in Goals.
-      </p>
-
-      <h2>Why only five goals?</h2>
-      <p>
-        Because a list you can add to forever stops meaning anything. Five is enough room for a
-        year and not enough room to avoid choosing, and choosing is the part that makes the
-        rest work. It is the one opinion the app has.
+        for Claude Desktop, Claude Code, Cursor, VS Code, Codex CLI, Gemini CLI and other apps
+        that support local MCP servers, with the text to copy. Locking in, unlocking, resetting
+        and deleting always ask you first in Goals, and a question nobody answers within 45
+        seconds changes nothing. An agent never sees an archived goal.
       </p>
 
       <h2>Why did a habit not break my streak?</h2>
