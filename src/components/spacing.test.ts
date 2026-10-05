@@ -27,9 +27,7 @@ const FILES = sources('src').map((path) => ({ path, text: readFileSync(path, 'ut
 describe('the breakpoints', () => {
   it('are named rather than written out', () => {
     const offenders = FILES.flatMap(({ path, text }) =>
-      [...text.matchAll(/@media \(max-width: (\d+)px\)/g)].map(
-        (match) => `${path}: ${match[0]}`,
-      ),
+      [...text.matchAll(/@media \(max-width: (\d+)px\)/g)].map((match) => `${path}: ${match[0]}`),
     )
     expect(offenders).toEqual([])
   })
@@ -45,13 +43,12 @@ describe('the breakpoints', () => {
 describe('the spacing scale', () => {
   it('is the only source of gaps, padding and margins', () => {
     // Anything with a pixel value that is not on the scale, excluding the
-    // places a raw number is the honest answer: hairlines, the drawn hardware
-    // in the phone and watch frames, and an image's own dimensions.
+    // places a raw number is the honest answer: hairlines and an image's own
+    // dimensions.
     const ALLOWED = /^(0|1|2|3)px$/
     const offenders: string[] = []
 
     for (const { path, text } of FILES) {
-      if (path.endsWith('Frame.tsx')) continue
       for (const line of text.split('\n')) {
         const declaration = /^\s*(gap|padding|margin)(-\w+)?:\s*(.+);\s*$/.exec(line)
         if (!declaration) continue

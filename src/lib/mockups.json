@@ -1,0 +1,123 @@
+{
+  "home": {
+    "width": 388,
+    "height": 800,
+    "widths": [
+      400,
+      776
+    ]
+  },
+  "home-add": {
+    "width": 388,
+    "height": 800,
+    "widths": [
+      400,
+      776
+    ]
+  },
+  "detail": {
+    "width": 388,
+    "height": 800,
+    "widths": [
+      400,
+      776
+    ]
+  },
+  "tasks": {
+    "width": 388,
+    "height": 800,
+    "widths": [
+      400,
+      776
+    ]
+  },
+  "habits": {
+    "width": 388,
+    "height": 800,
+    "widths": [
+      400,
+      776
+    ]
+  },
+  "habit": {
+    "width": 388,
+    "height": 800,
+    "widths": [
+      400,
+      776
+    ]
+  },
+  "archived": {
+    "width": 388,
+    "height": 800,
+    "widths": [
+      400,
+      776
+    ]
+  },
+  "settings": {
+    "width": 388,
+    "height": 800,
+    "widths": [
+      400,
+      776
+    ]
+  },
+  "ipad": {
+    "width": 614,
+    "height": 800,
+    "widths": [
+      620,
+      1228
+    ]
+  },
+  "ipad-habits": {
+    "width": 614,
+    "height": 800,
+    "widths": [
+      620,
+      1228
+    ]
+  },
+  "mac": {
+    "width": 1060,
+    "height": 680,
+    "widths": [
+      800,
+      1400,
+      2120
+    ]
+  },
+  "watch": {
+    "width": 208,
+    "height": 402,
+    "widths": [
+      208,
+      416
+    ]
+  },
+  "menubar": {
+    "width": 281,
+    "height": 573,
+    "widths": [
+      281,
+      562
+    ]
+  },
+  "widget-tasks": {
+    "width": 350,
+    "height": 164,
+    "widths": [
+      540,
+      1049
+    ]
+  },
+  "widget-goal": {
+    "width": 164,
+    "height": 164,
+    "widths": [
+      260,
+      493
+    ]
+  }
+}

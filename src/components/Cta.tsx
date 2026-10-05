@@ -19,20 +19,30 @@ const Button = styled.a<{ $live: boolean; $size: 'sm' | 'lg' }>`
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.space.s2};
+  margin: 0;
   padding: ${({ theme, $size }) =>
-    $size === 'lg' ? `${theme.space.s4} ${theme.space.s8}` : `${theme.space.s2} ${theme.space.s5}`};
-  border-radius: ${({ theme }) => theme.radius.sm};
+    $size === 'lg' ? `${theme.space.s4} ${theme.space.s8}` : `${theme.space.s2} ${theme.space.s4}`};
+  border-radius: ${({ theme }) => theme.radius.pill};
   background: ${({ theme, $live }) => ($live ? theme.color.accent : 'transparent')};
-  border: 1px solid ${({ theme, $live }) => ($live ? 'transparent' : theme.color.border)};
+  border: 1px solid ${({ theme, $live }) => ($live ? 'transparent' : theme.color.borderStrong)};
   color: ${({ theme, $live }) => ($live ? theme.color.ink : theme.color.textSecondary)};
-  font-size: ${({ $size }) => ($size === 'lg' ? '1.0625rem' : '0.9375rem')};
+  font-size: ${({ theme, $size }) => ($size === 'lg' ? theme.type.body : theme.type.small)};
   font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
-  transition: transform 0.15s ease;
+  transition:
+    transform 0.2s cubic-bezier(0.19, 1, 0.22, 1),
+    filter 0.2s ease;
 
   &:hover {
     transform: ${({ $live }) => ($live ? 'translateY(-1px)' : 'none')};
+    filter: ${({ $live }) => ($live ? 'brightness(1.08)' : 'none')};
+  }
+
+  &:active {
+    transform: ${({ $live }) => ($live ? 'scale(0.98)' : 'none')};
   }
 `
 

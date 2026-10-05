@@ -39,6 +39,27 @@ const palette = {
     glass: '#050505',
     /** The metal band around the glass, the one line that says "hardware". */
     rim: '#C7C7CC',
+    /**
+     * Under a device, and only a device. Hardware casts a shadow, a panel does
+     * not (DESIGN.md §14), and without one a framed phone on a white page reads
+     * as a sticker. Two soft layers: the contact shadow and the long one.
+     */
+    deviceShadow:
+      'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08)) drop-shadow(0 28px 48px rgba(0, 0, 0, 0.14))',
+    /** The header once the page has scrolled under it. */
+    barGlass: 'rgba(255, 255, 255, 0.78)',
+    /** The privacy band: the opposite ground, so the middle of the page turns. */
+    inverse: '#0A0A0A',
+    inverseText: '#FFFFFF',
+    inverseSecondary: '#A1A1A6',
+    /** The accent that reads on the inverse ground, which is dark in both. */
+    inverseAccent: '#60A5FA',
+    /** A hairline on the inverse ground. */
+    inverseBorder: 'rgba(255, 255, 255, 0.16)',
+    /** The app's orange (`clay`), deepened for the white canvas, and the type
+     *  on it. Run a marathon's colour, for the one goal the page draws. */
+    goal: '#C2410C',
+    onGoal: '#FFFFFF',
   },
   dark: {
     canvas: '#000000',
@@ -55,6 +76,18 @@ const palette = {
     stage: '#0C0C0D',
     glass: '#050505',
     rim: '#48484A',
+    /** Black on black shows nothing, so the long shadow goes and a faint lift
+     *  of the ground under the device does its job. */
+    deviceShadow: 'drop-shadow(0 24px 60px rgba(0, 0, 0, 0.9))',
+    barGlass: 'rgba(0, 0, 0, 0.72)',
+    inverse: '#1C1C1E',
+    inverseText: '#FFFFFF',
+    inverseSecondary: '#8E8E93',
+    inverseAccent: '#60A5FA',
+    inverseBorder: 'rgba(255, 255, 255, 0.14)',
+    /** The bright cut, under black type, as the app draws it on black. */
+    goal: '#F5941C',
+    onGoal: '#0A0A0A',
   },
 } as const
 
@@ -63,6 +96,10 @@ const shape = {
     sm: '10px',
     md: '20px',
     lg: '28px',
+    /** The feature cards: a step past the app's own panel, because a card on
+     *  a page this wide is several times the size of one on a phone. */
+    xl: '36px',
+    pill: '999px',
   },
   space: {
     s1: '4px',
@@ -78,6 +115,30 @@ const shape = {
     s20: '80px',
     s24: '96px',
     s32: '128px',
+    /**
+     * The two measures that scale with the window rather than stepping at a
+     * breakpoint: the space between sections (80px on a phone to 160px on a
+     * wide screen) and the gutter (20px to 40px). Everything else is a fixed
+     * step on the scale above.
+     */
+    section: 'clamp(5rem, 3.4rem + 6.8vw, 10rem)',
+    gutter: 'clamp(1.25rem, 0.8rem + 1.8vw, 2.5rem)',
+  },
+  /**
+   * The type scale, fluid between a phone and a wide screen.
+   *
+   * SF Pro at display sizes wants to be set tight and not too heavy: 600, with
+   * tracking that closes up as the size grows. Each step is one clamp, so a
+   * heading is never the size of the breakpoint it last crossed.
+   */
+  type: {
+    display: 'clamp(2.75rem, 1.5rem + 5.4vw, 5.75rem)',
+    title: 'clamp(2.125rem, 1.3rem + 3.2vw, 4rem)',
+    card: 'clamp(1.375rem, 1.15rem + 0.7vw, 1.75rem)',
+    lead: 'clamp(1.125rem, 1rem + 0.55vw, 1.4375rem)',
+    body: '1.0625rem',
+    small: '0.9375rem',
+    fine: '0.8125rem',
   },
   /**
    * Three breakpoints, and only three.
@@ -95,8 +156,10 @@ const shape = {
     /** Where two columns of substance stop fitting side by side. */
     lg: '980px',
   },
-  /** The reading column. */
-  maxWidth: '1120px',
+  /** The page's widest content. Text inside it keeps to `measure`. */
+  maxWidth: '1200px',
+  /** A comfortable line of body text. */
+  measure: '36rem',
 } as const
 
 export function buildTheme(mode: Mode) {

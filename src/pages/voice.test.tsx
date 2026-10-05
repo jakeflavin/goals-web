@@ -1,4 +1,5 @@
-import { renderPage } from '../test/render'
+import { everyWord, renderPage } from '../test/render'
+import { Footer, Header } from '../components/Chrome'
 import { Landing } from './Landing'
 import { Privacy } from './Privacy'
 import { Support } from './Support'
@@ -20,6 +21,15 @@ const PAGES = [
   { name: 'landing', element: <Landing /> },
   { name: 'privacy', element: <Privacy /> },
   { name: 'support', element: <Support /> },
+  {
+    name: 'header and footer',
+    element: (
+      <>
+        <Header mode="dark" onChangeMode={() => {}} />
+        <Footer />
+      </>
+    ),
+  },
 ]
 
 describe('the copy', () => {
@@ -27,7 +37,7 @@ describe('the copy', () => {
     for (const banned of BANNED) {
       it(`uses no ${banned.name} on the ${page.name} page`, () => {
         const { container } = renderPage(page.element)
-        expect(container.textContent ?? '').not.toMatch(banned.pattern)
+        expect(everyWord(container)).not.toMatch(banned.pattern)
       })
     }
   }

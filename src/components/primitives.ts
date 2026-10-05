@@ -1,209 +1,141 @@
 import styled, { css } from 'styled-components'
 
 /**
- * The page's shared furniture: the column, the headings, the rules, the panel.
+ * The page's shared furniture: the column, the headings, the card.
  *
- * No shadows and no gradients, for the same reason there are none in the app
- * (DESIGN.md §14): depth comes from a lifted surface, and a shadow reads as a
- * different design system. The device frames draw their own edges because
- * they are hardware rather than panels, and even they do it with a line.
+ * No gradients and no shadows on anything that is not hardware, for the same
+ * reason there are none in the app (DESIGN.md §14): depth comes from a lifted
+ * surface and a hairline. The one exception is a device, which casts a shadow
+ * because it is an object sitting on the page (`deviceShadow`, in the theme).
+ *
+ * Mobile first. Every query is a `min-width` on one of the theme's three
+ * breakpoints, so a phone gets the plain layout and the larger screens add to
+ * it, rather than the other way round.
  */
 
 export const Column = styled.div`
   width: 100%;
-  max-width: ${({ theme }) => theme.maxWidth};
+  max-width: calc(${({ theme }) => theme.maxWidth} + 2 * ${({ theme }) => theme.space.gutter});
   margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.space.s6};
+  padding: 0 ${({ theme }) => theme.space.gutter};
 `
 
-/**
- * The vertical rhythm, and the numbers the whole page is spaced by.
- *
- * One step per breakpoint. It used to be two, 96 above `lg` and 64 below it,
- * which gave an 834px tablet exactly the same rhythm as a 390px phone. The top
- * step is 128 rather than 96: at 96 a wide screen showed the end of one section
- * and the start of the next in the same glance, and a page that never lets one
- * idea have the screen to itself reads as a brochure.
- *
- * The rest of the spacing follows three rules, and every grid on the page uses
- * one of them:
- *
- * - Columns of prose in one section: `s16` side by side, `s12` once stacked.
- * - Cards in a grid: `s4`.
- * - Items in a hairline list: `s6`.
- */
+/** One idea per section, and room around it. The gap scales with the window
+ *  (`space.section`, 80px on a phone to 160px on a wide screen). */
 export const Section = styled.section`
-  padding: ${({ theme }) => theme.space.s32} 0;
-
-  @media (max-width: ${({ theme }) => theme.bp.lg}) {
-    padding: ${({ theme }) => theme.space.s24} 0;
-  }
-
-  @media (max-width: ${({ theme }) => theme.bp.md}) {
-    padding: ${({ theme }) => theme.space.s16} 0;
-  }
-`
-
-/** A section that sits on the lifted ground rather than the canvas. Used to
- *  break the page into movements without drawing a rule across every one. */
-export const Band = styled.div`
-  background: ${({ theme }) => theme.color.canvasAlt};
-  border-block: 1px solid ${({ theme }) => theme.color.border};
-`
-
-export const Rule = styled.hr`
-  height: 1px;
-  border: 0;
-  margin: 0;
-  background: ${({ theme }) => theme.color.border};
+  padding: ${({ theme }) => theme.space.section} 0;
 `
 
 /**
- * The type scale, in SF Pro and nothing else, as the app is (DESIGN.md §3).
+ * The type, in SF Pro and nothing else, as the app is (DESIGN.md §3).
  *
- * The scale is steep on purpose. A page set at 44px headings over 17px body
- * reads as a document; the headline here runs to 7.5rem and the section
- * headings to 3.5rem, tracked in hard as SF Display wants at that size, so
- * the page has one voice for claims and another for explaining them.
+ * Display sizes are set at 600 rather than bold, tracked in as the size grows,
+ * and balanced so a two line heading breaks where the sense does.
  */
-export const H1 = styled.h1`
+const display = css`
   margin: 0;
-  font-size: clamp(3.5rem, 8.6vw, 7.5rem);
-  line-height: 0.94;
-  letter-spacing: -0.05em;
-  font-weight: 700;
-
-  span {
-    display: block;
-  }
-`
-
-export const H2 = styled.h2`
-  margin: 0 0 ${({ theme }) => theme.space.s6};
-  max-width: 20ch;
-  font-size: clamp(2.25rem, 4.4vw, 3.5rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  font-weight: 700;
+  font-weight: 600;
   text-wrap: balance;
 `
 
+export const H1 = styled.h1`
+  ${display}
+  font-size: ${({ theme }) => theme.type.display};
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+`
+
+export const H2 = styled.h2`
+  ${display}
+  font-size: ${({ theme }) => theme.type.title};
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+`
+
 export const H3 = styled.h3`
-  margin: 0 0 ${({ theme }) => theme.space.s2};
-  font-size: 1.0625rem;
-  line-height: 1.35;
-  font-weight: 600;
+  ${display}
+  font-size: ${({ theme }) => theme.type.card};
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 `
 
 /**
- * The name of the thing a section is about, above its heading.
+ * The name of the part of the product a section is about, above its heading.
  *
  * Sentence case, in the accent, at body size, which is where the app settled
- * its own section headers (DESIGN.md §3: an 11pt tracked caption "reads as an
- * annotation stuck onto the card"). It used to be tracked capitals over every
- * section on the page; it is now only where a section is about one named part
- * of the product, so it names something rather than decorating everything.
+ * its own section headers (DESIGN.md §3). Only where a section is about one
+ * named thing, so it names something rather than decorating everything.
  */
 export const Eyebrow = styled.p`
-  margin: 0 0 ${({ theme }) => theme.space.s3};
-  font-size: 1.0625rem;
+  margin: 0 0 ${({ theme }) => theme.space.s4};
+  font-size: ${({ theme }) => theme.type.body};
   font-weight: 600;
   letter-spacing: -0.01em;
   color: ${({ theme }) => theme.color.accent};
 `
 
-export const Prose = styled.p<{ $lead?: boolean }>`
-  margin: 0 0 ${({ theme }) => theme.space.s5};
-  /* The measure. A ch is the width of a zero, so 62 of them is about 78 real
-     characters, which is the top of the comfortable range. */
-  max-width: 62ch;
+/** The sentence under a heading. One or two, never a paragraph of selling. */
+export const Lead = styled.p`
+  margin: ${({ theme }) => theme.space.s6} 0 0;
+  max-width: ${({ theme }) => theme.measure};
+  font-size: ${({ theme }) => theme.type.lead};
+  line-height: 1.45;
+  letter-spacing: -0.012em;
   color: ${({ theme }) => theme.color.textSecondary};
-
-  ${({ $lead }) =>
-    $lead &&
-    css`
-      font-size: clamp(1.125rem, 1.7vw, 1.375rem);
-      line-height: 1.45;
-      letter-spacing: -0.01em;
-      /* Bigger type wants a shorter line, not the same one. At 62ch the hero
-         paragraph ran to about ninety characters on a tablet. */
-      max-width: 50ch;
-    `}
+  text-wrap: pretty;
 
   a {
     color: ${({ theme }) => theme.color.accent};
     text-underline-offset: 3px;
   }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 `
 
-/** A lifted surface. The app's card, with the app's radius and no border. */
-export const Panel = styled.div`
-  background: ${({ theme }) => theme.color.surface};
-  border-radius: ${({ theme }) => theme.radius.md};
-  padding: ${({ theme }) => theme.space.s8};
+/** Body copy inside a card or a list. */
+export const Body = styled.p`
+  margin: ${({ theme }) => theme.space.s3} 0 0;
+  max-width: ${({ theme }) => theme.measure};
+  font-size: ${({ theme }) => theme.type.body};
+  line-height: 1.5;
+  color: ${({ theme }) => theme.color.textSecondary};
+  text-wrap: pretty;
+`
 
-  @media (max-width: ${({ theme }) => theme.bp.md}) {
-    padding: ${({ theme }) => theme.space.s6};
+/** The small print: platforms, requirements, what the price covers. */
+export const Fine = styled.p`
+  margin: ${({ theme }) => theme.space.s4} 0 0;
+  font-size: ${({ theme }) => theme.type.small};
+  line-height: 1.5;
+  color: ${({ theme }) => theme.color.textSecondary};
+  text-wrap: pretty;
+`
+
+/** A section's heading block, left aligned over the grid below it, which is
+ *  where the eye goes next. */
+export const Intro = styled.header`
+  margin-bottom: ${({ theme }) => theme.space.s12};
+
+  @media (min-width: ${({ theme }) => theme.bp.lg}) {
+    margin-bottom: ${({ theme }) => theme.space.s16};
   }
 `
 
 /**
- * Text on one side, a picture on the other, alternating down the page.
+ * A feature card: the app's lifted surface at a page's scale.
  *
- * The picture column is the narrower one. A phone is roughly twice as tall as
- * it is wide, so giving it half the width of a laptop makes the screenshot the
- * section and the words a caption, which is the wrong way round for a page
- * whose job is to explain something.
+ * It clips, so a device can run off its bottom edge, which says "there is more
+ * of this screen" without showing all of it, and keeps every card in a row the
+ * same height whatever is inside.
  */
-export const Split = styled.div<{ $pictureFirst?: boolean }>`
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: ${({ theme }) => theme.space.s16};
-  align-items: center;
+export const Card = styled.article`
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: ${({ theme }) => theme.radius.xl};
+  background: ${({ theme }) => theme.color.surface};
+  padding: ${({ theme }) => theme.space.s8} ${({ theme }) => theme.space.s8} 0;
 
-  > figure {
-    margin: 0;
-    order: ${({ $pictureFirst }) => ($pictureFirst ? -1 : 0)};
-  }
-
-  @media (max-width: ${({ theme }) => theme.bp.lg}) {
-    grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.space.s12};
-
-    > figure {
-      order: 0;
-    }
-  }
-`
-
-/** A list of named things under a heading, separated by hairlines. */
-export const Items = styled.dl`
-  margin: 0;
-  display: grid;
-  gap: ${({ theme }) => theme.space.s6};
-
-  /* 24 above the rule and 16 below it, so each rule reads as the top of the
-     item beneath rather than as a divider floating between two. */
-  div {
-    padding-top: ${({ theme }) => theme.space.s4};
-    border-top: 1px solid ${({ theme }) => theme.color.border};
-  }
-
-  dd {
-    margin: 0;
-    color: ${({ theme }) => theme.color.textSecondary};
-    font-size: 0.9375rem;
-  }
-`
-
-export const Grid = styled(Items)`
-  grid-template-columns: 1fr 1fr;
-
-  @media (max-width: ${({ theme }) => theme.bp.md}) {
-    grid-template-columns: 1fr;
+  @media (min-width: ${({ theme }) => theme.bp.lg}) {
+    padding: ${({ theme }) => theme.space.s10} ${({ theme }) => theme.space.s10} 0;
   }
 `

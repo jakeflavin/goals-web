@@ -14,3 +14,6 @@ dist-ssr
 *.sw?
 
 *.tsbuildinfo
+
+# bezl renders before they are encoded for the web (scripts/make-mockups.mjs)
+.mockups

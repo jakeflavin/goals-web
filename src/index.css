@@ -29,6 +29,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* The sticky header is 64px; an anchor or a focused control lands below it
+     rather than behind its frosted glass. */
+  scroll-padding-top: calc(64px + 1rem);
 }
 
 @media (prefers-reduced-motion: reduce) {

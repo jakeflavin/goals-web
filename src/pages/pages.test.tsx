@@ -1,14 +1,19 @@
+import { existsSync } from 'node:fs'
 import { screen, within } from '@testing-library/react'
-import { renderPage } from '../test/render'
+import { everyWord, renderPage } from '../test/render'
+import { Footer, Header } from '../components/Chrome'
+import MOCKUPS from '../lib/mockups.json'
 import { Landing } from './Landing'
 import { Privacy } from './Privacy'
 import { Support } from './Support'
 import { APP_STORE_URL, CONTACT_EMAIL, IS_ON_THE_APP_STORE, PLANS } from '../lib/site'
 
 describe('the landing page', () => {
-  it('leads with the product opinion', () => {
+  it('says what it is in the headline', () => {
     renderPage(<Landing />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Five goals. One year.')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'A goal tracker for the year',
+    )
   })
 
   it('gives every plan a price and a tier of its own', () => {
@@ -48,10 +53,10 @@ describe('the landing page', () => {
     }
   })
 
-  it('gives each of the three parts of a goal a section of its own', () => {
+  it('gives each of the three parts of a goal a card of its own', () => {
     renderPage(<Landing />)
-    for (const eyebrow of ['Milestones', 'Tasks', 'Habits']) {
-      expect(screen.getByText(eyebrow, { selector: 'p' })).toBeInTheDocument()
+    for (const part of ['Milestones', 'Tasks', 'Habits']) {
+      expect(screen.getByRole('heading', { name: part })).toBeInTheDocument()
     }
   })
 
@@ -81,18 +86,43 @@ describe('the screenshots', () => {
   // The app's two schemes are not inversions of each other, so each one is
   // captured separately and the page picks the file rather than filtering the
   // image. A phone in the wrong scheme shows a product that does not exist.
-  it.each(['light', 'dark'] as const)('are the %s capture in %s mode', (mode) => {
+  it.each(['light', 'dark'] as const)('are the %s capture in that mode', (mode) => {
     const { container } = renderPage(<Landing />, mode)
-    const phones = [...container.querySelectorAll('img')].filter((img) =>
-      /home|detail|habits|tasks|habitdetail|widgets|ipad|mac|menubar/.test(
-        img.getAttribute('src') ?? '',
-      ),
-    )
+    const devices = [...container.querySelectorAll('picture')]
 
-    expect(phones.length).toBeGreaterThan(0)
-    for (const phone of phones) {
-      expect(phone.getAttribute('src')).toContain(`-${mode}.`)
+    expect(devices.length).toBeGreaterThan(0)
+    for (const device of devices) {
+      const sources = [
+        device.querySelector('img')?.getAttribute('src') ?? '',
+        ...[...device.querySelectorAll('source')].map(
+          (source) => source.getAttribute('srcset') ?? '',
+        ),
+      ]
+      // A device the layout hides on small screens has an inline blank for
+      // them (`hiddenBelow`), which is no capture at all.
+      for (const source of sources.filter((value) => !value.startsWith('data:'))) {
+        expect(source).toContain(`-${mode}-`)
+        expect(source).not.toContain(`-${mode === 'light' ? 'dark' : 'light'}-`)
+      }
     }
+  })
+
+  // `npm run mockups` writes every width of every mockup in both schemes and
+  // both formats. One missing file is a broken image for somebody, on some
+  // screen, that no other test would notice.
+  it('all exist, in every width, format and scheme the page asks for', () => {
+    const missing: string[] = []
+    for (const [name, { widths }] of Object.entries(MOCKUPS)) {
+      for (const scheme of ['light', 'dark']) {
+        for (const width of widths) {
+          for (const ext of ['avif', 'webp']) {
+            const file = `public/mockups/${name}-${scheme}-${width}.${ext}`
+            if (!existsSync(file)) missing.push(file)
+          }
+        }
+      }
+    }
+    expect(missing).toEqual([])
   })
 
   it('describes every one of them', () => {
@@ -100,6 +130,27 @@ describe('the screenshots', () => {
     for (const img of container.querySelectorAll('img')) {
       expect(img.getAttribute('alt')).toBeTruthy()
     }
+  })
+})
+
+describe('the copy', () => {
+  // Goals had five slots for the year until October 2026, and the whole site
+  // argued from them. There is no cap now; this is the claim that must not
+  // come back on any page.
+  it.each([
+    ['landing', <Landing />],
+    ['privacy', <Privacy />],
+    ['support', <Support />],
+    [
+      'header and footer',
+      <>
+        <Header mode="dark" onChangeMode={() => {}} />
+        <Footer />
+      </>,
+    ],
+  ])('makes no five goal claim on the %s', (_, page) => {
+    const { container } = renderPage(page)
+    expect(everyWord(container)).not.toMatch(/five (goals|slots)|goal slots?|\bslots?\b/i)
   })
 })
 

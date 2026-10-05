@@ -8,6 +8,8 @@
     "skipLibCheck": true,
 
     "moduleResolution": "bundler",
+    // `src/lib/mockups.json`, the sizes `scripts/make-mockups.mjs` writes.
+    "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",

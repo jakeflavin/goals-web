@@ -27,7 +27,12 @@ jobs:
           node-version: 22
           cache: npm
 
+      # bezl (the mockup renderer, a dev dependency) pulls in puppeteer, whose
+      # install downloads a Chrome. CI only builds the site from the committed
+      # mockups, so it never needs one.
       - run: npm ci
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
       - run: npm run lint --if-present
       - run: npm run typecheck --if-present
       - run: npm test --if-present
